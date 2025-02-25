@@ -1,0 +1,302 @@
+.container {
+    padding: 16px;
+  }
+  
+  /* Header styles */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #3b82f6; /* Blue color */
+    color: white;
+    padding: 16px;
+    /* border-radius: 8px; */
+  }
+  
+  .header-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  
+  .header-links {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .reward-link {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: color 0.2s;
+  }
+  
+  .reward-link:hover {
+    text-decoration: none;
+  }
+  
+  .profile-icon {
+    /* background-color: white; */
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  .proImg {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 24px;
+  border-radius: 8px;
+  width: 300px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.modal-content p {
+  margin: 8px 0;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+.modal-button {
+  padding: 8px 16px;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.modal-button:hover {
+  background-color: #2563eb;
+}
+
+/* Widgets Section */
+.widgets {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.widget {
+  background-color: #d1d5db; /* Light gray */
+  height: auto; /* Adjust height dynamically */
+  border-radius: 8px;
+  box-sizing: border-box;
+  overflow: hidden; /* Prevent content overflow */
+}
+  
+/* IncomeExpenses Section */
+.IncomeExpenses {
+  height: auto; /* Adjust to fit content */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  box-sizing: border-box; /* Ensure padding doesn't overflow the container */
+  border-radius: 8px;
+  width: 100%; /* Make sure it fits the parent */
+  max-width: 100%; /* Prevent it from exceeding parent container width */
+}
+
+.IncomeExpenses h2 {
+  font-size: 1.5rem;
+  color: #111827; /* Dark gray text */
+  margin: 0;
+  text-align: center; /* Center align for small screens */
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap; /* Allow buttons to wrap to the next line */
+  gap: 8px;
+  justify-content: center; /* Center buttons */
+  width: 100%; /* Ensure buttons stay inside the container */
+}
+
+.button {
+  background-color: #3b82f6;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+  flex: 1 1 calc(33.33% - 16px); /* Buttons take 1/3 of the width */
+  max-width: 150px; /* Limit button size */
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.button:hover {
+  transform: translateY(-2px); /* Lift effect */
+}
+
+.button.income, 
+.button.expenses, 
+.button.reset, 
+.button.balance {
+  color: white;
+}
+
+.button.income:hover, 
+.button.expenses:hover, 
+.button.reset:hover, 
+.button.balance:hover {
+  background-color: #2563eb;
+}
+
+/* Add Income Modal */
+/* Modal Content */
+.modalIncome, 
+.modalExpenses, 
+.modalBalance {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 350px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  text-align: left;
+}
+
+.modalIncome h3, 
+.modalExpenses h3,
+.modalBalance h3 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+/* Input Fields */
+.modalIncome input[type="number"],
+.modalIncome input[type="text"],
+.modalIncome input[type="date"],
+.modalIncome select,
+.modalExpenses input[type="number"],
+.modalExpenses input[type="text"],
+.modalExpenses input[type="date"],
+.modalExpenses select,
+.modalBalance input[type="number"],
+.modalBalance select
+{
+  width: 350px;
+  padding: 8px;
+  margin: 8px 0 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  box-sizing: border-box; /* Include padding and border in width */
+  appearance: none; /* Remove default browser styles for dropdowns */
+}
+
+.modalIncome select,
+.modalExpenses select,
+.modalBalance select
+ {
+  background-color: white;
+  color: #374151;
+  -moz-appearance: none; /* Firefox */
+  -webkit-appearance: none; /* Safari */
+}
+
+/* Add custom dropdown icon for select fields */
+.modalIncome select,
+.modalExpenses select,
+.modalBalance select
+ {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3e%3cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  padding-right: 28px; /* Space for dropdown arrow */
+}
+
+/* Label */
+.modalIncome label,
+.modalExpenses label,
+.modalBalance label
+ {
+  /* font-size: 0.875rem; */
+  font-weight: bold;
+  color: #374151;
+}
+
+
+
+
+
+
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .buttons {
+    gap: 8px; /* Maintain small gap */
+  }
+
+  .button {
+    flex: 1 1 calc(50% - 12px); /* Buttons take 50% of the width */
+    font-size: 0.875rem; /* Adjust font size */
+    padding: 10px 14px;
+    max-width: 120px; /* Limit max width */
+  }
+}
+
+@media (max-width: 480px) {
+  .IncomeExpenses {
+    gap: 12px; /* Reduce spacing */
+    padding: 12px; /* Adjust padding */
+  }
+
+  .buttons {
+    gap: 6px; /* Reduce button gap */
+  }
+
+  .button {
+    flex: 1 1 calc(50% - 12px); /* Buttons take 50% of the width */
+    max-width: 100px; /* Further limit max width */
+    font-size: 0.75rem; /* Adjust font size for small screens */
+    padding: 8px 12px;
+  }
+}
