@@ -38,9 +38,7 @@ export const BalanceWidget = ({ uid }) => {
           // const response = await axios.get(PUBLIC_URL/api/currency);
           // const response = await axios.get("http://localhost:8080/api/currency");
 
-          const baseURL = process.env.NODE_ENV === "production" 
-            ? process.env.REACT_APP_API_BASE_URL 
-            : "https://myfinance-backend-pv55.onrender.com";
+          const baseURL = "https://myfinance-backend-pv55.onrender.com";
           const response = await axios.get(`${baseURL}/api/currency`);
           const currencyData = Object.keys(response.data.rates);
           const rates = response.data.rates;
