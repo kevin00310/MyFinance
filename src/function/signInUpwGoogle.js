@@ -6,7 +6,7 @@ import {
   GoogleAuthProvider,
 } from "firebase/auth";
 import { providerGoogle } from "../firebase";
-import { createUser } from "../function/createUser";
+import { createUser } from "./createUser";
 
 export const signInUpwGoogle = async (navigate) => {
   const auth = getAuth();
