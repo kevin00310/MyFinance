@@ -3,12 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import "./SignUp.css";
 import { useUserAuth } from "../function/useUserAuth.js";
 import { signUpwEmail } from "../function/signUpwEmail.js";
-import { signUpwGoogle, handleRedirectResult } from "../function/signUpwGoogle.js";
+import {
+  signInUpwGoogle,
+  handleRedirectResult,
+} from "../function/signInUpwGoogle.js";
 
 function SignUp() {
   useUserAuth();
 
-  const [loading, setLoading] = useState(true); // Track loading state
+  const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,16 +19,27 @@ function SignUp() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Handle redirect result and wait for it to finish
-    handleRedirectResult(navigate).finally(() => setLoading(false));
+    // Handle redirect results for Google Sign-In
+    handleRedirectResult(navigate)
+      .catch((error) => {
+        console.error("Error during Google redirect handling:", error);
+        alert("Error during Google sign-in. Please try again.");
+      })
+      .finally(() => setLoading(false));
   }, [navigate]);
 
   const handleSignUpClick = (event) => {
     event.preventDefault();
     if (name && email && password && comPassword) {
       if (password === comPassword) {
-        signUpwEmail(email, password, name);
-        navigate("/home");
+        signUpwEmail(email, password, name)
+          .then(() => navigate("/home"))
+          .catch((error) => {
+            console.error("Error during email sign-up:", error);
+            alert(
+              "Failed to sign up. Please check your details and try again."
+            );
+          });
       } else {
         alert("Error: Passwords do not match.");
       }
@@ -35,11 +49,14 @@ function SignUp() {
   };
 
   const SignUpGoogle = () => {
-    signUpwGoogle(navigate);
+    signInUpwGoogle(navigate).catch((error) => {
+      console.error("Error during Google sign-up:", error);
+      alert("Failed to sign up with Google. Please try again.");
+    });
   };
 
   if (loading) {
-    return <div>Loading...</div>; // Show a loader while handling the redirect
+    return <div>Loading...</div>; // Show a loader while processing
   }
 
   return (
