@@ -8,7 +8,7 @@ import {
 import { providerGoogle } from "../firebase";
 import { createUser } from "./createUser";
 
-export const signInUpwGoogle = async (navigate) => {
+export const signInUpwGoogle = async (navigate, redirectTo = "/home") => {
   const auth = getAuth();
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
@@ -17,6 +17,9 @@ export const signInUpwGoogle = async (navigate) => {
     providerGoogle.setCustomParameters({ prompt: "select_account" });
 
     if (isMobile) {
+      // Store the redirect target in sessionStorage
+      sessionStorage.setItem("redirectTo", redirectTo);
+
       // Use redirect flow for mobile devices
       await signInWithRedirect(auth, providerGoogle);
     } else {
@@ -34,7 +37,7 @@ export const signInUpwGoogle = async (navigate) => {
         await createUser(user, displayName); // Create user in database
       }
 
-      navigate("/home"); // Navigate to home page
+      navigate(redirectTo); // Navigate to the intended route
     }
   } catch (error) {
     console.error("Error during Google sign-in/sign-up:", error);
@@ -45,6 +48,7 @@ export const signInUpwGoogle = async (navigate) => {
     }
   }
 };
+
 
 export const handleRedirectResult = async (navigate) => {
   const auth = getAuth();
@@ -59,7 +63,11 @@ export const handleRedirectResult = async (navigate) => {
         await createUser(user, displayName); // Create user if new
       }
 
-      navigate("/home"); // Navigate to home page
+      // Retrieve the stored route or default to "/home"
+      const redirectTo = sessionStorage.getItem("redirectTo") || "/home";
+      sessionStorage.removeItem("redirectTo");
+
+      navigate(redirectTo); // Navigate to the intended route
     }
   } catch (error) {
     console.error("Error handling redirect result:", error);

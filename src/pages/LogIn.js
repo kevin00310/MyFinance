@@ -29,11 +29,12 @@ function LogIn() {
   };
 
   const SignInGoogle = () => {
-    signInUpwGoogle(navigate).catch((error) => {
-      console.error("Error during Google sign-up:", error);
-      alert("Failed to sign up with Google. Please try again.");
+    signInUpwGoogle(navigate, "/home").catch((error) => {
+      console.error("Error during Google sign-in:", error);
+      alert("Failed to sign in with Google. Please try again.");
     });
   };
+  
 
   useEffect(() => {
     // Handle redirect results for Google Sign-In
@@ -44,6 +45,10 @@ function LogIn() {
       })
       .finally(() => setLoading(false));
   }, [navigate]);
+
+  if (loading) {
+    return <div>Loading...</div>; // Show a loader while processing
+  }
 
   const handlePasswordReset = async () => {
     // Show a prompt window for the user to enter their email

@@ -49,11 +49,11 @@ function SignUp() {
   };
 
   const SignUpGoogle = () => {
-    signInUpwGoogle(navigate).catch((error) => {
+    signInUpwGoogle(navigate, "/home").catch((error) => {
       console.error("Error during Google sign-up:", error);
       alert("Failed to sign up with Google. Please try again.");
     });
-  };
+  };  
 
   if (loading) {
     return <div>Loading...</div>; // Show a loader while processing
