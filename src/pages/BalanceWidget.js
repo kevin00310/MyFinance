@@ -7,6 +7,8 @@ import moment from "moment";
 
 export const BalanceWidget = ({ uid }) => {
   const [balance, setBalance] = useState(0);
+  //const [income, setIncome] = useState(0);
+  //const [expenses, setExpenses] = useState(0);
   const [transactions, setTransactions] = useState([]);
   const [currencies, setCurrencies] = useState([]); // Store currency list
   const [exchangeRates, setExchangeRates] = useState({});
@@ -29,6 +31,31 @@ export const BalanceWidget = ({ uid }) => {
   useEffect(() => {
     console.log("User UID in BalanceWidget:", uid);
     // can use uid for fetching user-specific data
+  }, [uid]);
+
+  // fetch the transaction data
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      const fetchedTransactions = await getTransaction(uid);
+      setTransactions(fetchedTransactions);
+
+      // Calculate the total balance based on transaction type
+      const totalBalance = fetchedTransactions.reduce((currentBalance, transaction) => {
+        switch (transaction.transaction) {
+          case "Balance":
+          case "Income":
+            return currentBalance + transaction.convertedAmount; // Add income or initial balance
+          case "Expenses":
+            return currentBalance - transaction.convertedAmount; // Subtract expenses
+          default:
+            return currentBalance; // Ignore other transaction types
+        }
+      }, 0); // Start with a base balance of 0
+
+      setBalance(totalBalance);
+    };
+
+    fetchTransactions();
   }, [uid]);
 
   // fetch currency from backend
@@ -225,7 +252,7 @@ export const BalanceWidget = ({ uid }) => {
 
   return (
     <div className="IncomeExpenses">
-      <h2>Balance: RM {balance}</h2>
+      <h2>Balance: RM {balance.toFixed(2)}</h2>
       <div className="buttons">
         <button className="button income" onClick={openAddIncomeModal}>
           Add Income

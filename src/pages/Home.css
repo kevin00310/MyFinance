@@ -1,58 +1,59 @@
 .container {
-    padding: 16px;
-  }
-  
-  /* Header styles */
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #3b82f6; /* Blue color */
-    color: white;
-    padding: 16px;
-    /* border-radius: 8px; */
-  }
-  
-  .header-title {
-    font-size: 1.25rem;
-    font-weight: bold;
-  }
-  
-  .header-links {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  
-  .reward-link {
-    text-decoration: none;
-    color: white;
-    font-weight: bold;
-    transition: color 0.2s;
-  }
-  
-  .reward-link:hover {
-    text-decoration: none;
-  }
-  
-  .profile-icon {
-    /* background-color: white; */
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
+  padding: 16px;
+}
 
-  .proImg {
-    width: 32px;
-    height: 32px;
-  }
+/* Header styles */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #3b82f6; /* Blue color */
+  color: white;
+  padding: 16px;
+  /* border-radius: 8px; */
+}
 
-  /* Modal styles */
+.header-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.header-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.reward-link {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  transition: color 0.2s;
+}
+
+.reward-link:hover {
+  text-decoration: none;
+}
+
+.profile-icon {
+  /* background-color: white; */
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.proImg {
+  width: 32px;
+  height: 32px;
+}
+
+/* profile window */
+/* Modal styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -124,8 +125,8 @@
   box-sizing: border-box;
   overflow: hidden; /* Prevent content overflow */
 }
-  
-/* IncomeExpenses Section */
+
+/* BalanceWidget */
 .IncomeExpenses {
   height: auto; /* Adjust to fit content */
   display: flex;
@@ -173,24 +174,24 @@
   transform: translateY(-2px); /* Lift effect */
 }
 
-.button.income, 
-.button.expenses, 
-.button.reset, 
+.button.income,
+.button.expenses,
+.button.reset,
 .button.balance {
   color: white;
 }
 
-.button.income:hover, 
-.button.expenses:hover, 
-.button.reset:hover, 
+.button.income:hover,
+.button.expenses:hover,
+.button.reset:hover,
 .button.balance:hover {
   background-color: #2563eb;
 }
 
 /* Add Income Modal */
 /* Modal Content */
-.modalIncome, 
-.modalExpenses, 
+.modalIncome,
+.modalExpenses,
 .modalBalance {
   background: white;
   padding: 20px;
@@ -201,7 +202,7 @@
   text-align: left;
 }
 
-.modalIncome h3, 
+.modalIncome h3,
 .modalExpenses h3,
 .modalBalance h3 {
   font-size: 1.1rem;
@@ -219,8 +220,7 @@
 .modalExpenses input[type="date"],
 .modalExpenses select,
 .modalBalance input[type="number"],
-.modalBalance select
-{
+.modalBalance select {
   width: 350px;
   padding: 8px;
   margin: 8px 0 16px;
@@ -233,8 +233,7 @@
 
 .modalIncome select,
 .modalExpenses select,
-.modalBalance select
- {
+.modalBalance select {
   background-color: white;
   color: #374151;
   -moz-appearance: none; /* Firefox */
@@ -244,8 +243,7 @@
 /* Add custom dropdown icon for select fields */
 .modalIncome select,
 .modalExpenses select,
-.modalBalance select
- {
+.modalBalance select {
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='currentColor'%3e%3cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 8px center;
@@ -256,18 +254,108 @@
 /* Label */
 .modalIncome label,
 .modalExpenses label,
-.modalBalance label
- {
+.modalBalance label {
   /* font-size: 0.875rem; */
   font-weight: bold;
   color: #374151;
 }
 
+.TableWidget {
+  width: 100%;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
+.TableWidget h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #333333;
+}
 
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
 
+.controls input {
+  flex: 1;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  transition: border-color 0.2s;
+}
 
+.controls input:focus {
+  border-color: #007bff;
+  outline: none;
+}
 
+.controls select {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.controls select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+table thead {
+  background-color: #f8f9fa;
+}
+
+table th {
+  text-align: left;
+  padding: 0.75rem;
+  font-weight: bold;
+  color: #333333;
+  border-bottom: 2px solid #dddddd;
+}
+
+table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #eeeeee;
+  color: #555555;
+}
+
+table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+table tr:hover {
+  background-color: #f1f1f1;
+}
+
+table td:last-child {
+  text-align: right;
+}
+
+.no-data {
+  text-align: center;
+  color: #999999;
+  padding: 1rem;
+}
 
 /* Responsive Styles */
 @media (max-width: 768px) {

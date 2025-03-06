@@ -8,7 +8,7 @@ import { DNDwidget } from "../function/DNDwidget.js";
 import "./Home.css";
 import { BalanceWidget } from "./BalanceWidget.js";
 // import { GraphWidget } from "./GraphWidget.js";
-// import { TableWidget } from "./TableWidget.js";
+import { TransactionWidget } from "./TransactionWidget.js";
 import icon from "../img/profile_icon.png";
 
 const Home = () => {
@@ -81,7 +81,7 @@ const Home = () => {
 
   const initialWidgets = [
     { id: "widgetOne", content: <BalanceWidget uid={user[0]?.uid} /> },
-    { id: "widgetTwo", content: <div>Widget Two Content</div> },
+    { id: "widgetTwo", content: <TransactionWidget uid={user[0]?.uid} /> },
     { id: "widgetThree", content: <div>Widget Three Content</div> },
   ];
 
