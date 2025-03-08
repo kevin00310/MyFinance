@@ -40,7 +40,7 @@ export const TransactionWidget = ({ uid }) => {
 
   // sort transactions based on selected option
   const handleSort = (option) => {
-    let sortedTransactions = [...filteredTransactions];
+    let sortedTransactions = [...transactions];
     switch (option) {
       case "dateNewest":
         sortedTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -56,16 +56,16 @@ export const TransactionWidget = ({ uid }) => {
         break;
       case "typeIncome":
         sortedTransactions = sortedTransactions.filter(
-          (transaction) => transaction.type === "Income"
+          (transaction) => transaction.transaction === "Income"
         );
         break;
       case "typeExpenses":
         sortedTransactions = sortedTransactions.filter(
-          (transaction) => transaction.type === "Expenses"
+          (transaction) => transaction.transaction === "Expenses"
         );
         break;
       default:
-        sortedTransactions = transactions;
+        sortedTransactions = [...transactions];
     }
     setFilteredTransactions(sortedTransactions);
     setSortOption(option);

@@ -60,7 +60,6 @@ export const BalanceWidget = ({ uid }) => {
   
     fetchTransactions();
   }, [uid]);
-  
 
   // fetch currency from backend
   useEffect(() => {
@@ -415,6 +414,7 @@ export const BalanceWidget = ({ uid }) => {
                 required
               >
                 <option value="">-- Select Currency --</option>
+                <option value="MYR">MYR</option>
                 {currencies.map((currency) => (
                   <option key={currency} value={currency}>
                     {currency}
