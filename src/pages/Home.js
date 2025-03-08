@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { auth, db } from "../firebase";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { signOut } from "firebase/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { DNDwidget } from "../function/DNDwidget.js";
 import "./Home.css";
@@ -12,23 +12,41 @@ import icon from "../img/profile_icon.png";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [user, loading, error] = useAuthState(auth);
+  const [user] = useAuthState(auth); 
+  const [uid, setUid] = useState(null); 
+  const [loading, setLoading] = useState(true); 
   const [creationDate, setCreationDate] = useState("");
   const [daysJoined, setDaysJoined] = useState(0);
   const [userName, setUserName] = useState("");
+  const [widgetOri, setWidgetOri] = useState([]);
 
+  // for check uid load
   useEffect(() => {
-    if (user) {
-      const fetchUserData = async () => {
-        const creationTime = new Date(user.metadata.creationTime);
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        setUid(currentUser.uid);
+        console.log("uid: " + currentUser.uid);
+
+        setWidgetOri([
+          { id: "widgetOne", content: <BalanceWidget uid={currentUser.uid} /> },
+          { id: "widgetTwo", content: <TransactionWidget uid={currentUser.uid} /> },
+          { id: "widgetThree", content: <div>Widget Three Content</div> },
+        ]);
+
+        // get the date created acc
+        const creationTime = new Date(currentUser.metadata.creationTime);
         setCreationDate(creationTime.toDateString());
 
+        // count join day
         const today = new Date();
         const differenceInTime = today - creationTime;
-        const differenceInDays = Math.floor(differenceInTime / (1000 * 60 * 60 * 24));
+        const differenceInDays = Math.floor(
+          differenceInTime / (1000 * 60 * 60 * 24)
+        ); // convert to day
         setDaysJoined(differenceInDays);
 
-        const userRef = doc(db, "users", user.uid);
+        // get user name from firebase
+        const userRef = doc(db, "users", currentUser.uid);
         const userData = await getDoc(userRef);
 
         if (userData.exists()) {
@@ -36,92 +54,100 @@ const Home = () => {
         } else {
           console.error("User data not found in database.");
         }
-      };
 
-      fetchUserData();
-    }
-  }, [user]);
+        setLoading(false); 
+      } else {
+        setUid(null);
+        setLoading(false); 
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
-    if (!loading && !user) {
-      navigate("/");
+    if (user) {
+      navigate("/Home");
     }
-  }, [loading, user, navigate]);
+  }, [user, navigate]);
 
-  const logoutFunc = () => {
-    signOut(auth)
-      .then(() => {
-        alert("Logout Successful!");
-        navigate("/");
-      })
-      .catch((error) => {
-        alert("Error during logout: " + error.message);
-      });
-  };
+  // logout
+  function logoutFunc() {
+    try {
+      alert("Logout Successful!");
+      navigate("/");
 
+      signOut(auth)
+        .then(() => {
+          console.log("Logout successful!");
+        })
+        .catch((error) => {
+          alert("Error during logout: " + error.message);
+        });
+    } catch (error) {
+      alert("Unexpected error: " + error.message);
+    }
+  }
+
+  // profile window
   const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
-  const initialWidgets = [
-    { id: "widgetOne", content: <BalanceWidget uid={user?.uid} /> },
-    { id: "widgetTwo", content: <TransactionWidget uid={user?.uid} /> },
-    { id: "widgetThree", content: <div>Widget Three Content</div> },
-  ];
-
-  const {
-    items: widgets,
-    handleDragStart,
-    handleDragOver,
-    handleDrop,
-  } = DNDwidget(initialWidgets);
+  console.log("pass uid: " + uid);
+  
 
   if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  }
-
-  if (!user) {
-    return null;
+    return <div>Loading...</div>; // loading
   }
 
   return (
     <>
       <div>
+        {/* head */}
         <div className="header">
           <h1 className="header-title">MyFinance</h1>
           <div className="header-links">
-            <Link to="/reward" className="reward-link">Reward</Link>
+            <Link to="/reward" className="reward-link">
+              Reward
+            </Link>
             <div className="profile-icon" onClick={toggleModal}>
-              <img className="proImg" src={icon} alt="Profile Icon" />
+              <img className="proImg" src={icon} />
             </div>
           </div>
         </div>
 
+        {/* profile window */}
         {isModalOpen && (
           <div className="modal-overlay">
             <div className="modal-content">
               <button className="close-button" onClick={toggleModal}>
                 &times;
               </button>
-              <p><strong>Day Joined:</strong> {daysJoined} Days</p>
-              <p><strong>Name:</strong> {userName}</p>
-              <p><strong>Email:</strong> {user.email}</p>
+              <p>
+                <strong>Day Joined:</strong> {daysJoined} Days
+              </p>
+              <p>
+                <strong>Name:</strong> {userName}
+              </p>
+              <p>
+                <strong>Email:</strong> {user?.email}
+              </p>
               <div className="modal-buttons">
                 <Link to="/reward">
                   <button className="modal-button">Reward</button>
                 </Link>
-                <button className="modal-button" onClick={logoutFunc}>Logout</button>
+                <button className="modal-button" onClick={logoutFunc}>
+                  Logout
+                </button>
               </div>
             </div>
           </div>
         )}
 
+        {/* widget */}
         <div className="container">
           <div className="widgets">
-            {widgets.map((widget, index) => (
+            {/* {widgets.map((widget, index) => (
               <div
                 key={widget.id}
                 className="widget"
@@ -133,7 +159,10 @@ const Home = () => {
               >
                 {widget.content}
               </div>
-            ))}
+            ))} */}
+            {widgetOri.map((widget) => (
+        <div className="widget" key={widget.id}>{widget.content}</div>
+      ))}
           </div>
         </div>
       </div>

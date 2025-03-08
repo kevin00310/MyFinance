@@ -6,11 +6,10 @@ import axios from "axios";
 import moment from "moment";
 
 export const BalanceWidget = ({ uid }) => {
+  console.log("balance: " + uid);
   const [balance, setBalance] = useState(0);
-  //const [income, setIncome] = useState(0);
-  //const [expenses, setExpenses] = useState(0);
   const [transactions, setTransactions] = useState([]);
-  const [currencies, setCurrencies] = useState([]); // Store currency list
+  const [currencies, setCurrencies] = useState([]); // store currency list
   const [exchangeRates, setExchangeRates] = useState({});
   const [selectedCurrency, setSelectedCurrency] = useState("");
   const [selectedIncomeAmount, setSelectedIncomeAmount] = useState("");
@@ -43,7 +42,7 @@ export const BalanceWidget = ({ uid }) => {
       const fetchedTransactions = await getTransaction(uid);
       setTransactions(fetchedTransactions);
   
-      // Calculate the total balance based on transaction type
+      // calculate the total balance based on transaction type
       const totalBalance = fetchedTransactions.reduce((currentBalance, transaction) => {
         switch (transaction.transaction) {
           case "Balance":

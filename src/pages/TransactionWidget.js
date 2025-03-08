@@ -9,14 +9,14 @@ export const TransactionWidget = ({ uid }) => {
   const [sortOption, setSortOption] = useState("");
 
   useEffect(() => {
-    // Load transactions from local storage on component mount
+    // load transactions from local storage on component mount
     const storedTransactions = JSON.parse(localStorage.getItem("transactions")) || [];
     setTransactions(storedTransactions);
     setFilteredTransactions(storedTransactions);
   }, []);
   
 
-  // Fetch transactions data when component is mounted or uid changes
+  // fetch transactions data when component is mounted or uid changes
   useEffect(() => {
     const fetchTransactions = async () => {
       const fetchedTransactions = await getTransaction(uid);
@@ -27,7 +27,7 @@ export const TransactionWidget = ({ uid }) => {
     fetchTransactions();
   }, [uid]);
 
-  // Filter transactions based on search term
+  // filter transactions based on search term
   useEffect(() => {
     const lowercasedSearchTerm = searchTerm.toLowerCase();
     const results = transactions.filter((transaction) =>
@@ -38,7 +38,7 @@ export const TransactionWidget = ({ uid }) => {
     setFilteredTransactions(results);
   }, [searchTerm, transactions]);
 
-  // Sort transactions based on selected option
+  // sort transactions based on selected option
   const handleSort = (option) => {
     let sortedTransactions = [...filteredTransactions];
     switch (option) {
