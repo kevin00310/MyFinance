@@ -323,6 +323,7 @@ export const BalanceWidget = ({ uid }) => {
                 required
               >
                 <option value="">-- Select Currency --</option>
+                <option value="MYR">MYR</option>
                 {currencies.map((currency) => (
                   <option key={currency} value={currency}>
                     {currency}
