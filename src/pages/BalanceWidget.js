@@ -68,16 +68,12 @@ export const BalanceWidget = ({ uid }) => {
       try {
         const baseURL = "https://myfinance-backend-pv55.onrender.com";
         const response = await axios.get(`${baseURL}/api/currency`);
-        // Extract currency codes and buying rates
-        const currencyData = response.data.data.map((item) => ({
-          code: item.currency_code,
-          buyingRate: item.rate.buying_rate,
-        }));
-
-        const rates = {};
-        currencyData.forEach((item) => {
-          rates[item.code] = item.buyingRate;
-        });
+        const data = response.data.data;
+        const currencyData = data.map((item) => item.currency_code);
+        const rates = data.reduce((acc, item) => {
+          acc[item.currency_code] = item.rate.buying_rate;
+          return acc;
+        }, {});
         setCurrencies(currencyData);
         setExchangeRates(rates);
       } catch (error) {
