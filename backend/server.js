@@ -19,8 +19,14 @@ app.get('/api', (req, res) => {
 // Currency API route
 app.get('/api/currency', async (req, res) => {
     try {
-        const response = await axios.get(`https://api.bnm.gov.my/public/exchange-rate`, {
-            headers: { apiKey: process.env.CURRENCY_API_KEY }, // Secure API key in .env file
+        // BNM Currency API endpoint
+        const bnmApiUrl = 'https://api.bnm.gov.my/public/exchange-rate';
+
+        // Fetch currency data from BNM API
+        const response = await axios.get(bnmApiUrl, {
+            headers: {
+                'Accept': 'application/vnd.BNM.API.v1+json', // Set header for BNM API version
+            },
         });
         res.json(response.data);
     } catch (error) {
