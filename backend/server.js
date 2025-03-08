@@ -19,7 +19,7 @@ app.get('/api', (req, res) => {
 // Currency API route
 app.get('/api/currency', async (req, res) => {
     try {
-        const response = await axios.get(`https://anyapi.io/api/v1/exchange/rates?base=MYR&apiKey=k6npb5ukj081gue171s1brnq4do6ep96jesriha0rlem8p18aspg`, {
+        const response = await axios.get(`https://api.bnm.gov.my/public/exchange-rate`, {
             headers: { apiKey: process.env.CURRENCY_API_KEY }, // Secure API key in .env file
         });
         res.json(response.data);
