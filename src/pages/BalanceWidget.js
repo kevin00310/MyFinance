@@ -22,8 +22,7 @@ export const BalanceWidget = ({ uid }) => {
   const [selectedExpensesName, setSelectedExpensesName] = useState("");
   const [selectedExpensesType, setSelectedExpensesType] = useState("");
   const [selectedExpensesDate, setSelectedExpensesDate] = useState("");
-  const [isAddExpensesModalVisible, setAddExpensesModalVisible] =
-    useState(false);
+  const [isAddExpensesModalVisible, setAddExpensesModalVisible] = useState(false);
   const [selectedBalanceAmount, setSelectedBalanceAmount] = useState("");
   const [isAddBalanceModalVisible, setAddBalanceModalVisible] = useState(false);
 
@@ -36,27 +35,33 @@ export const BalanceWidget = ({ uid }) => {
   // fetch the transaction data
   useEffect(() => {
     const fetchTransactions = async () => {
+      if (!uid) {
+        console.error("UID is undefined. Cannot fetch transactions.");
+        return;
+      }
+  
       const fetchedTransactions = await getTransaction(uid);
       setTransactions(fetchedTransactions);
-
+  
       // Calculate the total balance based on transaction type
       const totalBalance = fetchedTransactions.reduce((currentBalance, transaction) => {
         switch (transaction.transaction) {
           case "Balance":
           case "Income":
-            return currentBalance + transaction.convertedAmount; // Add income or initial balance
+            return currentBalance + transaction.convertedAmount;
           case "Expenses":
-            return currentBalance - transaction.convertedAmount; // Subtract expenses
+            return currentBalance - transaction.convertedAmount;
           default:
-            return currentBalance; // Ignore other transaction types
+            return currentBalance;
         }
-      }, 0); // Start with a base balance of 0
-
+      }, 0);
+  
       setBalance(totalBalance);
     };
-
+  
     fetchTransactions();
   }, [uid]);
+  
 
   // fetch currency from backend
   useEffect(() => {
@@ -243,7 +248,7 @@ export const BalanceWidget = ({ uid }) => {
   // get all transaction from database
   const getTransactionData = () => {
     console.log(uid);
-    //getTransaction(uid);
+    getTransaction(uid);
   };
 
   const resetBalance = () => {

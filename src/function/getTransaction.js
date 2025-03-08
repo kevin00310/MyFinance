@@ -9,10 +9,11 @@ export const getTransaction = async (uid) => {
     querySnapshot.forEach((doc) => {
       transactionsArray.push(doc.data());
     });
-    return transactionsArray; // Return the transactions array
+    console.log("Fetched Transactions:", transactionsArray); // Debugging
+    return transactionsArray;
   } catch (e) {
     console.error("Error getting document: ", e);
     alert("Couldn't get transaction");
-    return []; // Return an empty array in case of error
+    return [];
   }
 };

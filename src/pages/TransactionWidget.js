@@ -8,6 +8,14 @@ export const TransactionWidget = ({ uid }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOption, setSortOption] = useState("");
 
+  useEffect(() => {
+    // Load transactions from local storage on component mount
+    const storedTransactions = JSON.parse(localStorage.getItem("transactions")) || [];
+    setTransactions(storedTransactions);
+    setFilteredTransactions(storedTransactions);
+  }, []);
+  
+
   // Fetch transactions data when component is mounted or uid changes
   useEffect(() => {
     const fetchTransactions = async () => {
