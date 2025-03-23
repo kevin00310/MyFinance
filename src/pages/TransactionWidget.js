@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 import { getTransaction } from "../function/getTransaction";
 import "./Home.css";
 
@@ -143,8 +143,15 @@ export const TransactionWidget = ({ uid }) => {
     doc.text("Transaction History", 14, 10);
     console.log(typeof jsPDF().autoTable); // Should print "function"
 
-    doc.autoTable({ head: [tableColumn], body: tableRows, startY: 20 });
-    console.log(typeof jsPDF().autoTable); // Should print "function"
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 20,
+    });
+
+    // doc.autoTable({ head: [tableColumn], body: tableRows, startY: 20 });
+    // console.log(typeof jsPDF().autoTable); // Should print "function"
 
     doc.save("transactions.pdf");
   };
