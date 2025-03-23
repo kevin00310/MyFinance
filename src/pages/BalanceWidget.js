@@ -253,6 +253,7 @@ export const BalanceWidget = ({ uid }) => {
     getTransaction(uid);
   };
 
+  // havent link to firebase to clear the record, wait for adding
   const resetBalance = () => {
     setBalance(0);
   };

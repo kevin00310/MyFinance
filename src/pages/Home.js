@@ -29,8 +29,8 @@ const Home = () => {
 
         setWidgetOri([
           { id: "widgetOne", content: <BalanceWidget uid={currentUser.uid} /> },
-          { id: "widgetTwo", content: <TransactionWidget uid={currentUser.uid} /> },
-          { id: "widgetThree", content: <div>Widget Three Content</div> },
+          { id: "widgetTwo", content: <div>Widget Two Content</div> },
+          { id: "widgetThree", content: <TransactionWidget uid={currentUser.uid} /> },
         ]);
 
         // get the date created acc
