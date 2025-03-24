@@ -77,6 +77,7 @@ export const TransactionWidget = ({ uid }) => {
     setSortOption(option);
   };
 
+  // export by year, month
   const filterByDate = (transactions, year, month) => {
     return transactions.filter((transaction) => {
       const transactionDate = new Date(transaction.date);
@@ -89,6 +90,7 @@ export const TransactionWidget = ({ uid }) => {
     });
   };
 
+  // export option
   const exportCSV = () => {
     const dataToExport = filterByDate(filteredTransactions, selectedYear, selectedMonth);
     const csvData = dataToExport.map((transaction) => ({
@@ -168,39 +170,36 @@ export const TransactionWidget = ({ uid }) => {
           <div className="modal-content exportFormat">
             <h3>Select Year and Month</h3>
             <div className="modal-controls">
-        <label>
-          Year:
-          <select
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(e.target.value)}
-          >
-            <option value="">All</option>
-            {[...new Set(transactions.map((t) => new Date(t.date).getFullYear()))]
-              .sort((a, b) => b - a)
-              .map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-          </select>
-        </label>
-        <label>
-          Month:
-          <select
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-          >
-            <option value="">All</option>
-            {[...Array(12).keys()].map((month) => (
-              <option key={month + 1} value={month + 1}>
-                {new Date(0, month).toLocaleString("default", {
-                  month: "long",
-                })}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
+              <label>
+              Year:
+              <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
+                  <option value="">All</option>
+                  {[...new Set(transactions.map((t) => new Date(t.date).getFullYear()))]
+                    .sort((a, b) => b - a)
+                    .map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                </select>
+              </label>
+              <label>
+                Month:
+                <select
+                  value={selectedMonth}
+                  onChange={(e) => setSelectedMonth(e.target.value)}
+                >
+                  <option value="">All</option>
+                  {[...Array(12).keys()].map((month) => (
+                    <option key={month + 1} value={month + 1}>
+                      {new Date(0, month).toLocaleString("default", {
+                        month: "long",
+                      })}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
             <button className="modal-button" onClick={exportCSV}>
               Export to CSV
             </button>
