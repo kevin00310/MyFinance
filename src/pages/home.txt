@@ -1,0 +1,182 @@
+import React, { useState, useEffect } from "react";
+import { auth, db } from "../firebase";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { BalanceWidget } from "./BalanceWidget";
+import { TransactionWidget } from "./TransactionWidget";
+import icon from "../img/profile_icon.png";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Container,
+  Box,
+  Modal,
+  Button,
+  Avatar,
+  Paper,
+  Divider,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+
+const StyledAppBar = styled(AppBar)(({ theme }) => ({
+  backgroundColor: "#3b82f6",
+}));
+
+const ProfileModal = styled(Paper)(({ theme }) => ({
+  position: "absolute",
+  width: 300,
+  padding: theme.spacing(3),
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  borderRadius: 8,
+}));
+
+const WidgetContainer = styled(Paper)(({ theme }) => ({
+  border: "1px solid black",
+  borderRadius: 8,
+  overflow: "hidden",
+}));
+
+const Home = () => {
+  const navigate = useNavigate();
+  const [user] = useAuthState(auth);
+  const [uid, setUid] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [creationDate, setCreationDate] = useState("");
+  const [daysJoined, setDaysJoined] = useState(0);
+  const [userName, setUserName] = useState("");
+  const [widgetOri, setWidgetOri] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        setUid(currentUser.uid);
+        
+        setWidgetOri([
+          { id: "widgetOne", content: <BalanceWidget uid={currentUser.uid} /> },
+          { id: "widgetTwo", content: <div>Widget Two Content</div> },
+          { id: "widgetThree", content: <TransactionWidget uid={currentUser.uid} /> },
+        ]);
+
+        const creationTime = new Date(currentUser.metadata.creationTime);
+        setCreationDate(creationTime.toDateString());
+        const today = new Date();
+        const differenceInDays = Math.floor(
+          (today - creationTime) / (1000 * 60 * 60 * 24)
+        );
+        setDaysJoined(differenceInDays);
+
+        const userRef = doc(db, "users", currentUser.uid);
+        const userData = await getDoc(userRef);
+        if (userData.exists()) {
+          setUserName(userData.data().name);
+        }
+        setLoading(false);
+      } else {
+        setUid(null);
+        setLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      navigate("/Home");
+    }
+  }, [user, navigate]);
+
+  const logoutFunc = () => {
+    try {
+      alert("Logout Successful!");
+      navigate("/");
+      signOut(auth)
+        .then(() => {
+          console.log("Logout successful!");
+        })
+        .catch((error) => {
+          alert("Error during logout: " + error.message);
+        });
+    } catch (error) {
+      alert("Unexpected error: " + error.message);
+    }
+  };
+
+  const toggleModal = () => setIsModalOpen(!isModalOpen);
+
+  if (loading) {
+    return <Typography>Loading...</Typography>;
+  }
+
+  return (
+    <>
+      <StyledAppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+            MyFinance
+          </Typography>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <Button color="inherit" component={Link} to="/reward">
+              Reward
+            </Button>
+            <Avatar
+              src={icon}
+              sx={{ width: 32, height: 32, cursor: "pointer" }}
+              onClick={toggleModal}
+            />
+          </Box>
+        </Toolbar>
+      </StyledAppBar>
+
+      <Modal open={isModalOpen} onClose={toggleModal}>
+        <ProfileModal>
+          <Typography variant="body1" sx={{ mb: 1 }}>
+            <strong>Day Joined:</strong> {daysJoined} Days
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 1 }}>
+            <strong>Name:</strong> {userName}
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            <strong>Email:</strong> {user?.email}
+          </Typography>
+          <Divider sx={{ mb: 2 }} />
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Button
+              variant="contained"
+              component={Link}
+              to="/reward"
+              sx={{ backgroundColor: "#3b82f6", "&:hover": { backgroundColor: "#2563eb" } }}
+            >
+              Reward
+            </Button>
+            <Button
+              variant="contained"
+              onClick={logoutFunc}
+              sx={{ backgroundColor: "#3b82f6", "&:hover": { backgroundColor: "#2563eb" } }}
+            >
+              Logout
+            </Button>
+          </Box>
+        </ProfileModal>
+      </Modal>
+
+      <Container sx={{ py: 2 }}>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {widgetOri.map((widget) => (
+            <WidgetContainer key={widget.id} elevation={0}>
+              {widget.content}
+            </WidgetContainer>
+          ))}
+        </Box>
+      </Container>
+    </>
+  );
+};
+
+export default Home;
