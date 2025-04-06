@@ -4,7 +4,7 @@ import { auth } from "../firebase"; // Replace db with auth since sendPasswordRe
 
 export function ForgetPassword() {
   const handlePasswordReset = async () => {
-    // Show a prompt window for the user to enter their email
+    // show prompt window for user to enter email
     const email = window.prompt("Please enter your email address for password reset:");
 
     if (!email) {
@@ -13,7 +13,7 @@ export function ForgetPassword() {
     }
 
     try {
-      // Trigger the Firebase password reset email
+      // trigger Firebase password reset email
       await sendPasswordResetEmail(auth, email);
       alert("Password reset email sent successfully. Please check your inbox.");
     } catch (error) {
