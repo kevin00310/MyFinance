@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { addTransaction } from "../function/addTransaction";
 import { getTransaction } from "../function/getTransaction";
+import { deleteTransaction } from "../function/deleteTransaction";
 import axios from "axios";
 import moment from "moment";
 import {
@@ -47,6 +48,7 @@ export const BalanceWidget = ({ uid }) => {
   const [isAddExpensesModalVisible, setAddExpensesModalVisible] = useState(false);
   const [selectedBalanceAmount, setSelectedBalanceAmount] = useState("");
   const [isAddBalanceModalVisible, setAddBalanceModalVisible] = useState(false);
+  const [isConfirmResetModalVisible, setConfirmResetModalVisible] = useState(false);
 
   useEffect(() => {
     console.log("User UID in BalanceWidget:", uid);
@@ -76,6 +78,7 @@ export const BalanceWidget = ({ uid }) => {
     fetchTransactions();
   }, [uid]);
 
+  // fetch currency form api
   useEffect(() => {
     const fetchCurrencies = async () => {
       try {
@@ -96,13 +99,17 @@ export const BalanceWidget = ({ uid }) => {
     fetchCurrencies();
   }, []);
 
+  // modal for income, expenses, balance
   const openAddIncomeModal = () => setAddIncomeModalVisible(true);
   const closeAddIncomeModal = () => setAddIncomeModalVisible(false);
   const openAddExpensesModal = () => setAddExpensesModalVisible(true);
   const closeAddExpensesModal = () => setAddExpensesModalVisible(false);
   const openAddBalanceModal = () => setAddBalanceModalVisible(true);
   const closeAddBalanceModal = () => setAddBalanceModalVisible(false);
+  const openConfirmResetModal = () => setConfirmResetModalVisible(true);
+  const closeConfirmResetModal = () => setConfirmResetModalVisible(false);
 
+  // convert currency to MYR
   const calculateConvertedAmount = () => {
     let amount = 0;
     if (selectedIncomeAmount !== "") amount = parseFloat(selectedIncomeAmount);
@@ -114,6 +121,7 @@ export const BalanceWidget = ({ uid }) => {
     return rate ? amount / rate : 0;
   };
 
+  // add income 
   const addIncome = () => {
     if (!selectedIncomeAmount || !selectedIncomeName || !selectedCurrency || !selectedIncomeType || !selectedIncomeDate) {
       alert("Please fill out all fields!");
@@ -143,6 +151,7 @@ export const BalanceWidget = ({ uid }) => {
     closeAddIncomeModal();
   };
 
+  // add expenses
   const addExpenses = () => {
     if (!selectedExpensesAmount || !selectedExpensesName || !selectedCurrency || !selectedExpensesType || !selectedExpensesDate) {
       alert("Please fill out all fields!");
@@ -172,6 +181,7 @@ export const BalanceWidget = ({ uid }) => {
     closeAddExpensesModal();
   };
 
+  // add balance
   const addBalance = () => {
     if (!selectedBalanceAmount || !selectedCurrency) {
       alert("Please fill out all fields!");
@@ -199,7 +209,51 @@ export const BalanceWidget = ({ uid }) => {
     closeAddBalanceModal();
   };
 
-  const resetBalance = () => setBalance(0);
+  // reset balance 
+  // const resetBalance = () => setBalance(0);
+  const resetTransactions = async () => {
+    let operationFailed = false;
+    try {
+      console.log("Starting resetTransactions...");
+      const collectionPath = `users/${uid}/transactions`;
+      await deleteTransaction(collectionPath);
+      console.log("Firestore deletion completed successfully.");
+    } catch (error) {
+      console.error("Detailed error clearing transactions:", error.message, error.code, error);
+      operationFailed = true;
+    }
+
+    // Check if the collection is actually empty
+    try {
+      const remainingTransactions = await getTransaction(uid);
+      if (remainingTransactions.length === 0) {
+        // Collection is empty, consider the operation successful
+        setTransactions([]);
+        setBalance(0);
+        alert("All transaction data has been cleared!");
+        window.location.reload();
+      } else {
+        // Some documents remain, operation failed
+        alert("Failed to clear all transactions. Some data remains. Please try again.");
+        operationFailed = true;
+      }
+    } catch (error) {
+      console.error("Error checking remaining transactions:", error.message, error.code, error);
+      alert("Error verifying transaction deletion. Please check manually.");
+      operationFailed = true;
+    } finally {
+      console.log("Closing confirmation modal...");
+      closeConfirmResetModal();
+      // if (!operationFailed) {
+      //   console.log("Refreshing page...");
+      //   setTimeout(() => {
+      //     window.location.reload();
+      //   }, 1000); // Delay to ensure the alert is visible
+      // }
+    }
+  };
+
+
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", p: 2 }}>
@@ -210,7 +264,7 @@ export const BalanceWidget = ({ uid }) => {
         {balance === 0 ? (
           <Button variant="contained" color="primary" onClick={openAddBalanceModal}>Balance</Button>
         ) : (
-          <Button variant="contained" color="primary" onClick={resetBalance}>Reset</Button>
+          <Button variant="contained" color="primary" onClick={openConfirmResetModal}>Reset</Button>
         )}
       </Box>
 
@@ -351,12 +405,46 @@ export const BalanceWidget = ({ uid }) => {
             <InputLabel>Currency</InputLabel>
             <Select value={selectedCurrency} onChange={(e) => setSelectedCurrency(e.target.value)} required>
               <MenuItem value="">-- Select Currency --</MenuItem>
+              <MenuItem value="MYR">MYR</MenuItem>
               {currencies.map((currency) => (
                 <MenuItem key={currency} value={currency}>{currency}</MenuItem>
               ))}
             </Select>
           </FormControl>
           <Button variant="contained" color="primary" fullWidth onClick={addBalance} sx={{ mt: 2 }}>Add Balance</Button>
+        </Box>
+      </Modal>
+
+      {/* Confirmation Modal for Reset */}
+      <Modal open={isConfirmResetModalVisible} onClose={closeConfirmResetModal}>
+        <Box sx={modalStyle}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+            <Typography variant="h6">Confirm Reset</Typography>
+            <IconButton onClick={closeConfirmResetModal}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <Typography variant="body1" sx={{ mb: 3 }}>
+            Do you want to clear all transaction data?
+          </Typography>
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={resetTransactions}
+              sx={{ flex: 1, mr: 1 }}
+            >
+              Yes
+            </Button>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={closeConfirmResetModal}
+              sx={{ flex: 1, ml: 1 }}
+            >
+              No
+            </Button>
+          </Box>
         </Box>
       </Modal>
     </Box>

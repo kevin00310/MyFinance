@@ -20,13 +20,13 @@ export const ChartWidget = ({ uid }) => {
   const [pieFilter, setPieFilter] = useState('All');
 
   const theme = useTheme();
-  const isXxsScreen = useMediaQuery('(max-width:400px)'); // Custom breakpoint < 400px
-  const isXsScreen = useMediaQuery(theme.breakpoints.between('xs', 'sm')); // 0px - 599px
-  const isSmScreen = useMediaQuery(theme.breakpoints.between('sm', 'md')); // 600px - 899px
+  const isXxsScreen = useMediaQuery('(max-width:400px)');
+  const isXsScreen = useMediaQuery(theme.breakpoints.between('xs', 'sm'));
+  const isSmScreen = useMediaQuery(theme.breakpoints.between('sm', 'md'));
   const isBelow800px = useMediaQuery('(max-width:799px)');
-  const isMdScreen = useMediaQuery(theme.breakpoints.up('md')); // >= 900px
-  
-  // bar & pie size on screen
+  const isMdScreen = useMediaQuery(theme.breakpoints.up('md'));
+
+  // Bar & pie size on screen
   const getChartDimensions = () => {
     if (isXxsScreen) {
       return { 
@@ -40,7 +40,7 @@ export const ChartWidget = ({ uid }) => {
       return { 
         barWidth: 350, 
         barHeight: 200, 
-        pieWidth: 300, 
+        pieWidth: 330, 
         pieHeight: 180, 
         gap: 0
       };
@@ -73,7 +73,7 @@ export const ChartWidget = ({ uid }) => {
 
   const { barWidth, barHeight, pieWidth, pieHeight, gap } = getChartDimensions();
 
-  // fetch transaction
+  // Fetch transactions
   useEffect(() => {
     const fetchTransactions = async () => {
       const fetchedTransactions = await getTransaction(uid);
@@ -92,7 +92,7 @@ export const ChartWidget = ({ uid }) => {
     : [...Array(selectedYear === currentYear.toString() ? currentMonth : 12).keys()]
         .map(i => i + 1);
 
-  // get data for bar
+  // Get data for bar chart
   const getBarChartData = () => {
     let xAxisData = [];
     let incomeData = [];
@@ -151,7 +151,7 @@ export const ChartWidget = ({ uid }) => {
     return { xAxisData, incomeData, expensesData };
   };
 
-  // get data for pie
+  // Get data for pie chart
   const getPieChartData = () => {
     const filtered = transactions.filter(t => {
       const [year, month] = t.date.split('-');
@@ -159,13 +159,14 @@ export const ChartWidget = ({ uid }) => {
              (!selectedMonth || parseInt(month) === parseInt(selectedMonth));
     });
 
+    let pieData;
     if (pieFilter === 'All') {
       const totals = filtered.reduce((acc, t) => {
         if (t.transaction === 'Income') acc.income += t.convertedAmount;
         else if (t.transaction === 'Expenses') acc.expenses += t.convertedAmount;
         return acc;
       }, { income: 0, expenses: 0 });
-      return [
+      pieData = [
         { id: 0, value: totals.income, label: 'Income', color: '#1976d2' },
         { id: 1, value: totals.expenses, label: 'Expenses', color: '#d32f2f' }
       ];
@@ -176,17 +177,29 @@ export const ChartWidget = ({ uid }) => {
         .forEach(t => {
           typeData[t.type] = (typeData[t.type] || 0) + t.convertedAmount;
         });
-      return Object.entries(typeData).map(([type, value], index) => ({
+      pieData = Object.entries(typeData).map(([type, value], index) => ({
         id: index,
         value,
         label: type,
         color: `hsl(${index * 60}, 70%, 50%)`
       }));
     }
+
+    // Calculate the total sum of all values for percentage calculation
+    const total = pieData.reduce((sum, item) => sum + item.value, 0);
+
+    // Add percentage to each item for display in arcLabel
+    return {
+      pieData: pieData.map(item => ({
+        ...item,
+        percentage: total > 0 ? (item.value / total) * 100 : 0, // Calculate percentage
+      })),
+      total,
+    };
   };
 
   const { xAxisData, incomeData, expensesData } = getBarChartData();
-  const pieData = getPieChartData();
+  const { pieData, total } = getPieChartData();
 
   return (
     <Box sx={{ p: { xs: 1, sm: 2, md: 3 } }}>
@@ -197,14 +210,13 @@ export const ChartWidget = ({ uid }) => {
         mb: 2,
         flexDirection: isXxsScreen ? 'column' : 'row',
       }}>
-        <Typography variant="h5" fontWeight="bold" >Transaction Charts</Typography>
+        <Typography variant="h5" fontWeight="bold">Transaction Charts</Typography>
         <Box sx={{ 
           display: 'flex', 
           flexDirection: 'row',
           alignItems: 'center'
         }}>
-
-          {/* year & month dropdown */}
+          {/* Year & month dropdown */}
           <FormControl sx={{ minWidth: 100, width: { xs: '100%', sm: 100 } }}>
             <InputLabel sx={{ fontSize: '0.9rem' }}>Year</InputLabel>
             <Select
@@ -266,7 +278,7 @@ export const ChartWidget = ({ uid }) => {
           />
         </Box>
 
-        {/* pie & filter */}
+        {/* Pie & filter */}
         <Box sx={{ 
           width: '100%',
           maxWidth: pieWidth,
@@ -292,7 +304,7 @@ export const ChartWidget = ({ uid }) => {
           <PieChart
             series={[{
               data: pieData,
-              arcLabel: (item) => `${item.value.toFixed(2)}`,
+              arcLabel: (item) => `${item.percentage.toFixed(1)}%`, // Display percentage
               arcLabelMinAngle: 35,
               arcLabelRadius: '60%',
             }]}

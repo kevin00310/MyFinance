@@ -61,7 +61,8 @@ const Header = ({
     <>
       <StyledAppBar position="static" sx={{ boxShadow: 0 }} >
         <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" sx={{ flexGrow: 1 }} component={Link}
+            to="/Home" style={{ textDecoration: "none", color: "inherit" }} >
             MyFinance
           </Typography>
           <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>

@@ -4,6 +4,7 @@ import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { getTransaction } from "../function/getTransaction";
+import { deleteField } from "../function/deleteField";
 import {
   Box,
   Typography,
@@ -26,6 +27,7 @@ import {
   DialogActions,
   IconButton,
   TablePagination,
+  Checkbox,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -39,6 +41,7 @@ export const TransactionWidget = ({ uid }) => {
   const [selectedMonth, setSelectedMonth] = useState("");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [selectedTransactions, setSelectedTransactions] = useState([]);
 
   useEffect(() => {
     const storedTransactions = JSON.parse(localStorage.getItem("transactions")) || [];
@@ -110,7 +113,8 @@ export const TransactionWidget = ({ uid }) => {
       );
     });
   };
-
+  
+  // export to CSV
   const exportCSV = () => {
     const dataToExport = filterByDate(filteredTransactions, selectedYear, selectedMonth);
     const csvData = dataToExport.map((transaction) => ({
@@ -132,6 +136,7 @@ export const TransactionWidget = ({ uid }) => {
     saveAs(blob, "transactions.csv");
   };
 
+  // export to Excel
   const exportExcel = () => {
     const dataToExport = filterByDate(filteredTransactions, selectedYear, selectedMonth);
     const worksheet = XLSX.utils.json_to_sheet(dataToExport);
@@ -140,6 +145,7 @@ export const TransactionWidget = ({ uid }) => {
     XLSX.writeFile(workbook, "transactions.xlsx");
   };
 
+  // export to PDF
   const exportPDF = () => {
     const dataToExport = filterByDate(filteredTransactions, selectedYear, selectedMonth);
     const doc = new jsPDF();
@@ -171,6 +177,40 @@ export const TransactionWidget = ({ uid }) => {
     doc.save("transactions.pdf");
   };
 
+  // Handle checkbox selection
+  const handleCheckboxChange = (transactionId) => {
+    setSelectedTransactions((prevSelected) =>
+      prevSelected.includes(transactionId)
+        ? prevSelected.filter((id) => id !== transactionId)
+        : [...prevSelected, transactionId]
+    );
+  };
+
+  // Handle delete button click
+  const handleDeleteSelected = async () => {
+    try {
+      // Delete the selected transactions from Firestore
+      await deleteField(uid, selectedTransactions);
+
+      // Update the local state by removing the deleted transactions
+      const updatedTransactions = transactions.filter(
+        (transaction) => !selectedTransactions.includes(transaction.id)
+      );
+      setTransactions(updatedTransactions);
+      setFilteredTransactions(updatedTransactions);
+
+      // Clear the selected transactions
+      setSelectedTransactions([]);
+
+      alert("Selected transactions deleted successfully!");
+    } catch (error) {
+      console.error("Error deleting selected transactions:", error);
+      alert("Failed to delete selected transactions. Please try again.");
+    }
+  };
+
+
+  // change page (pagination)
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -199,13 +239,14 @@ export const TransactionWidget = ({ uid }) => {
         <Typography variant="h5" fontWeight="bold">
           Transaction History
         </Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setShowExportPopup(true)}
-        >
-          Export to
-        </Button>
+        <Box sx={{ display: "flex", gap: 1 }}>
+          <Button variant="contained" color="secondary" onClick={handleDeleteSelected} disabled={selectedTransactions.length === 0} >
+            Delete
+          </Button>
+          <Button variant="contained" color="primary" onClick={() => setShowExportPopup(true)} >
+            Export to
+          </Button>
+        </Box>
       </Box>
 
       <Dialog open={showExportPopup} onClose={() => setShowExportPopup(false)} >
@@ -296,6 +337,7 @@ export const TransactionWidget = ({ uid }) => {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell padding="checkbox"></TableCell>
               <TableCell>Date</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Type</TableCell>
@@ -309,6 +351,12 @@ export const TransactionWidget = ({ uid }) => {
             {paginatedTransactions.length > 0 ? (
               paginatedTransactions.map((transaction, index) => (
                 <TableRow key={index}>
+                  <TableCell padding="checkbox">
+                    <Checkbox
+                      checked={selectedTransactions.includes(transaction.id)}
+                      onChange={() => handleCheckboxChange(transaction.id)}
+                    />
+                  </TableCell>
                   <TableCell>{transaction.date}</TableCell>
                   <TableCell>{transaction.name}</TableCell>
                   <TableCell>{transaction.type}</TableCell>
@@ -320,7 +368,7 @@ export const TransactionWidget = ({ uid }) => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={7} align="center">
+                <TableCell colSpan={8} align="center">
                   No transactions available
                 </TableCell>
               </TableRow>

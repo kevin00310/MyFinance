@@ -7,7 +7,8 @@ export const getTransaction = async (uid) => {
     const querySnapshot = await getDocs(q);
     let transactionsArray = [];
     querySnapshot.forEach((doc) => {
-      transactionsArray.push(doc.data());
+      // Include the document ID in the transaction data
+      transactionsArray.push({ id: doc.id, ...doc.data() });
     });
     console.log("Fetched Transactions:", transactionsArray); // debug
     return transactionsArray;

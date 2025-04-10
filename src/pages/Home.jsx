@@ -7,6 +7,7 @@ import { BalanceWidget } from "./BalanceWidget";
 import { ChartWidget } from "./ChartWidget";
 import { TransactionWidget } from "./TransactionWidget";
 import Header from "../components/Header";
+import Loading from "../pages/Loading";
 import {
   Container,
   Box,
@@ -74,7 +75,17 @@ const Home = () => {
   }, [user, loadingAuth, navigate]);
 
   if (loading || loadingAuth) {
-    return <Typography>Loading...</Typography>;
+    return (
+      <Loading
+        user={user}
+        uid={uid}
+        navigate={navigate}
+        daysJoined={daysJoined}
+        userName={userName}
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+      />
+    );
   }
 
   if (error) {
