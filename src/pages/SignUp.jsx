@@ -75,6 +75,10 @@ function SignUp() {
   const [comPassword, setComPassword] = useState("");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    document.title = 'Sign Up';
+  }, []);
+
   const theme = useTheme();
   const isXsScreen = useMediaQuery(theme.breakpoints.down("sm")); // < 600px
   const isSmScreen = useMediaQuery(theme.breakpoints.between("sm", "md")); // 600px - 899px

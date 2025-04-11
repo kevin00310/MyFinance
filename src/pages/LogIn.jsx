@@ -76,6 +76,10 @@ function LogIn() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    document.title = 'Log In';
+  }, []);
+
   const theme = useTheme();
   const isXsScreen = useMediaQuery(theme.breakpoints.down("sm")); // < 600px
   const isSmScreen = useMediaQuery(theme.breakpoints.between("sm", "md")); // 600px - 899px
@@ -83,10 +87,10 @@ function LogIn() {
 
   // adjust top padding based on screen size
   const getDynamicPaddingTop = () => {
-    if (isXsScreen) return 2; // 32px for extra small screens
-    if (isSmScreen) return 4; // 48px for small screens
-    if (isMdScreen) return 6; // 64px for medium and larger screens
-    return 8; // Default fallback
+    if (isXsScreen) return 2; // 32px
+    if (isSmScreen) return 4; // 48px 
+    if (isMdScreen) return 6; // 64px 
+    return 8; 
   };
 
   const dynamicPt = getDynamicPaddingTop();

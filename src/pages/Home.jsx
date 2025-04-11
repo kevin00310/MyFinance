@@ -41,6 +41,10 @@ const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
+    document.title = 'MyFinance';
+  }, []);
+
+  useEffect(() => {
     const fetchUserData = async () => {
       if (user) {
         const currentUid = user.uid;

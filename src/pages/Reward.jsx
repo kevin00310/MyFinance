@@ -64,7 +64,6 @@ const imageMap = {
   "Kenangan Coffee": kenanganImage,
   Starbuck: starbuckImage,
   "Zus Coffee": zusImage,
-
 };
 
 export default function Reward() {
@@ -81,6 +80,10 @@ export default function Reward() {
   const [daysJoined, setDaysJoined] = useState(0);
   const [userName, setUserName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    document.title = 'Reward';
+  }, []);
 
   // Fetch user data and handle authentication
   useEffect(() => {
