@@ -104,21 +104,25 @@ function SignUp() {
     event.preventDefault();
     if (name && email && password && comPassword) {
       if (password === comPassword) {
-        signUpwEmail(email, password, name)
-          .then(() => navigate("/home"))
-          .catch((error) => {
-            console.error("Error during email sign-up:", error);
-            alert(
-              "Failed to sign up. Please check your details and try again."
-            );
-          });
+        if (password.length >= 8) {
+          signUpwEmail(email, password, name)
+            .then(() => navigate("/home"))
+            .catch((error) => {
+              console.error("Error during email sign-up:", error);
+              alert(
+                "Failed to sign up. Please check your details and try again."
+              );
+            });
+        } else {
+          alert("Password must be at least 8 characters long.");
+        }
       } else {
-        alert("Error: Passwords do not match.");
+        alert("Passwords do not match.");
       }
     } else {
-      alert("Error: All fields are required.");
+      alert("All fields are required.");
     }
-  };
+  };  
 
   // sign up google func
   const SignUpGoogle = () => {

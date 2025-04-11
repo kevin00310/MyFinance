@@ -1,7 +1,6 @@
 import {
   getAuth,
   signInWithPopup,
-  signInWithRedirect,
   getRedirectResult,
   GoogleAuthProvider,
 } from "firebase/auth";
@@ -10,66 +9,61 @@ import { createUser } from "./createUser";
 
 export const signInUpwGoogle = async (navigate, redirectTo = "/home") => {
   const auth = getAuth();
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   try {
     // Set custom parameters to force account selection
     providerGoogle.setCustomParameters({ prompt: "select_account" });
 
-    if (isMobile) {
-      // Store the redirect target in sessionStorage
-      sessionStorage.setItem("redirectTo", redirectTo);
+    console.log("Attempting Google sign-in...");
 
-      // Use redirect flow for mobile devices
-      await signInWithRedirect(auth, providerGoogle);
-    } else {
-      // Use popup flow for desktop
-      const result = await signInWithPopup(auth, providerGoogle);
+    // Use popup flow for all devices
+    const result = await signInWithPopup(auth, providerGoogle);
 
-      // Process user information
-      const user = result.user;
-      const displayName = user.displayName || "User";
+    // Process user information
+    const user = result.user;
+    const email =  user.email || "Email";
+    console.log(email);
+    const displayName = user.displayName || "User";
 
-      console.log(`Signed in as: ${displayName}`);
+    console.log(`Signed in as: ${displayName}`);
 
-      // Check if a new user needs to be created
-      if (result.additionalUserInfo.isNewUser) {
-        await createUser(user, displayName); // Create user in database
-      }
-
-      navigate(redirectTo); // Navigate to the intended route
+    // Check if a new user needs to be created
+    if (result.additionalUserInfo?.isNewUser) {
+      await createUser(user, displayName); // Create user in database
     }
+
+    // Navigate to the intended route
+    navigate(redirectTo);
   } catch (error) {
-    console.error("Error during Google sign-in/sign-up:", error);
-    if (error.code === "auth/account-exists-with-different-credential") {
-      alert(
-        "An account with this email already exists. Please use a different sign-in method."
-      );
+    console.error("Error during Google sign-in:", error);
+
+    // Handle specific errors
+    switch (error.code) {
+      case "auth/popup-closed-by-user":
+        alert("Popup closed before completing sign-in. Please try again.");
+        break;
+      case "auth/account-exists-with-different-credential":
+        alert(
+          "An account with this email already exists. Please use a different sign-in method."
+        );
+        break;
+      default:
+        alert("Failed to sign in with Google. Please try again.");
     }
+
+    // Explicitly prevent navigation if error occurs
+    return;
   }
 };
 
-
-export const handleRedirectResult = async (navigate) => {
+export const handleRedirectResult = (navigate) => {
   const auth = getAuth();
-  try {
-    const result = await getRedirectResult(auth);
+  return getRedirectResult(auth).then((result) => {
     if (result) {
-      const user = result.user;
-      const displayName = user.displayName || "User";
-
-      console.log(`Redirect sign-in successful: ${displayName}`);
-      if (result.additionalUserInfo.isNewUser) {
-        await createUser(user, displayName); // Create user if new
-      }
-
-      // Retrieve the stored route or default to "/home"
-      const redirectTo = sessionStorage.getItem("redirectTo") || "/home";
-      sessionStorage.removeItem("redirectTo");
-
-      navigate(redirectTo); // Navigate to the intended route
+      // Process the result, e.g., navigate to the home page
+      navigate("/home");
     }
-  } catch (error) {
+  }).catch((error) => {
     console.error("Error handling redirect result:", error);
-  }
+  });
 };

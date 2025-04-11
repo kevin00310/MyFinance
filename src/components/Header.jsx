@@ -80,9 +80,9 @@ const Header = ({
 
       <Modal open={isModalOpen} onClose={toggleModal}>
         <ProfileModal>
-          <Typography variant="body1" sx={{ mb: 1 }}>
-            <strong>UID:</strong> {uid} {/* Display uid */}
-          </Typography>
+          {/* <Typography variant="body1" sx={{ mb: 1 }}>
+            <strong>UID:</strong> {uid} 
+          </Typography> */}
           <Typography variant="body1" sx={{ mb: 1 }}>
             <strong>Day Joined:</strong> {daysJoined} Days
           </Typography>
