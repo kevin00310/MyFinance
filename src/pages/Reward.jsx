@@ -10,12 +10,16 @@ import Loading from "../pages/Loading";
 import RewardCard from "../components/RewardCard";
 
 // Import images
-import ewalletImage from "../img/rewardImg/ewalletImage.png";
-// import shopeeImage from "../img/rewardImg/shopeeImage.png";
-// import lazadaImage from "../img/rewardImg/lazadaImage.png";
-// import taobaoImage from "../img/rewardImg/taobaoImage.png";
-// import chageeImage from "../img/rewardImg/chageeImage.png";
-// import kfcImage from "../img/rewardImg/kfcImage.png";
+import chageeImage from "../img/rewardImg/chagee.png";
+import ewalletImage from "../img/rewardImg/tng.png";
+import kenanganImage from "../img/rewardImg/kenangan.png";
+import kfcImage from "../img/rewardImg/kfc.png";
+import lazadaImage from "../img/rewardImg/lazada.png";
+import mcdImage from "../img/rewardImg/mcd.png";
+import starbuckImage from "../img/rewardImg/starbuck.png";
+import shopeeImage from "../img/rewardImg/shopee.png";
+import taobaoImage from "../img/rewardImg/taobao.png";
+import zusImage from "../img/rewardImg/zus.png";
 
 // Ensure the entire page background is consistent
 const PageWrapper = styled(Box)({
@@ -51,11 +55,16 @@ const RewardModal = styled(Paper)(({ theme }) => ({
 // Map reward titles to images
 const imageMap = {
   "E-wallet": ewalletImage,
-  Shopee: ewalletImage,
-  Lazada: ewalletImage,
-  TaoBao: ewalletImage,
-  Chagee: ewalletImage,
-  KFC: ewalletImage,
+  Shopee: shopeeImage,
+  Lazada: lazadaImage,
+  TaoBao: taobaoImage,
+  Chagee: chageeImage,
+  KFC: kfcImage,
+  Mcdonald: mcdImage,
+  "Kenangan Coffee": kenanganImage,
+  Starbuck: starbuckImage,
+  "Zus Coffee": zusImage,
+
 };
 
 export default function Reward() {
@@ -109,11 +118,12 @@ export default function Reward() {
       .then((text) => {
         const lines = text.trim().split("\n");
         const parsedRewards = lines.map((line) => {
-          const [title, description, value] = line.split("|");
+          const [title, description, value, link] = line.split("|");
           return {
             title: title.trim(),
             description: description.trim(),
             value: value.trim(),
+            link: link.trim(), // Add link here
             imageSrc: imageMap[title.trim()] || "",
           };
         });
@@ -128,38 +138,17 @@ export default function Reward() {
             title: "E-wallet",
             description: "Enjoy RM 15 voucher off",
             value: "RM 15",
+            link: "https://example.com/ewallet", // Example default link
             imageSrc: imageMap["E-wallet"],
           },
           {
             title: "Shopee",
             description: "Enjoy 15% voucher off",
             value: "15%",
+            link: "https://example.com/shopee", // Example default link
             imageSrc: imageMap["Shopee"],
           },
-          {
-            title: "Lazada",
-            description: "Enjoy 20% voucher off",
-            value: "20%",
-            imageSrc: imageMap["Lazada"],
-          },
-          {
-            title: "TaoBao",
-            description: "Enjoy RM 30 voucher off",
-            value: "RM 30",
-            imageSrc: imageMap["TaoBao"],
-          },
-          {
-            title: "Chagee",
-            description: "Enjoy 25% voucher off",
-            value: "25%",
-            imageSrc: imageMap["Chagee"],
-          },
-          {
-            title: "KFC",
-            description: "Enjoy RM 40 voucher off",
-            value: "RM 40",
-            imageSrc: imageMap["KFC"],
-          },
+          // Add other default rewards if needed
         ];
         setRewards(defaultRewards);
         setLoading(false);
@@ -270,29 +259,31 @@ export default function Reward() {
       </ScrollableContent>
 
       {/* Popup Modal */}
-      <Modal open={isRewardModalOpen} onClose={handleCloseModal}>
-        <RewardModal>
-          <Typography variant="h6" gutterBottom>
-            Reward Unlocked!
-          </Typography>
-          <Typography variant="body1" gutterBottom>
-            Congratulations! You've unlocked the {selectedReward?.title} reward.
-          </Typography>
-          <Typography variant="body2" color="text.secondary" gutterBottom>
-            {selectedReward?.description}
-          </Typography>
-          <Typography variant="h5" color="primary" gutterBottom>
-            {selectedReward?.value}
-          </Typography>
-          <Button
-            variant="contained"
-            onClick={handleCloseModal}
-            sx={{ mt: 2, backgroundColor: "#3b82f6", "&:hover": { backgroundColor: "#2563eb" } }}
-          >
-            Close
-          </Button>
-        </RewardModal>
-      </Modal>
+      {/* Popup Modal */}
+<Modal open={isRewardModalOpen} onClose={handleCloseModal}>
+  <RewardModal>
+    <Typography variant="h6" gutterBottom>
+      Reward Unlocked!
+    </Typography>
+    <Typography variant="body1" gutterBottom>
+      Congratulations! You've unlocked the {selectedReward?.title} reward.
+    </Typography>
+    <Typography variant="body2" color="text.secondary" gutterBottom>
+      {selectedReward?.description}
+    </Typography>
+    <Typography variant="h5" color="primary" gutterBottom>
+      {selectedReward?.value}
+    </Typography>
+    <Button
+      variant="contained"
+      onClick={() => window.open(selectedReward?.link, "_blank")}
+      sx={{ mt: 2, backgroundColor: "#3b82f6", "&:hover": { backgroundColor: "#2563eb" } }}
+    >
+      Go to Offer
+    </Button>
+  </RewardModal>
+</Modal>
+
     </PageWrapper>
   );
 }
