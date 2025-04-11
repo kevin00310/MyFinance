@@ -60,7 +60,7 @@ const imageMap = {
   TaoBao: taobaoImage,
   Chagee: chageeImage,
   KFC: kfcImage,
-  Mcdonald: mcdImage,
+  "Mcdonald's": mcdImage,
   "Kenangan Coffee": kenanganImage,
   Starbuck: starbuckImage,
   "Zus Coffee": zusImage,

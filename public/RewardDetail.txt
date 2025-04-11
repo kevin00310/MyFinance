@@ -3,7 +3,7 @@ Lazada|Enjoy 20% voucher off|20%|https://www.lazada.com.my
 TaoBao|Enjoy RM 30 voucher off|RM 30|https://my.world.taobao.com
 Chagee|Enjoy 25% voucher off|25%|https://h5.chagee.com.my/main
 KFC|Enjoy RM 40 voucher off|RM 40|https://kfc.com.my
-Mcdonald|Enjoy 25% voucher off|25%|https://www.mcdonalds.com.my/en/mcdapp
+Mcdonald's|Enjoy 25% voucher off|25%|https://www.mcdonalds.com.my/en/mcdapp
 Starbuck|Enjoy 20% voucher off|20%|https://www.starbucks.com.my/mop
 Shopee|Enjoy free shipping voucher off|Free Shipping|https://shopee.com.my
 Zus Coffee|Enjoy 10% voucher off|10%|https://zus.rymnet.com/rcpAuth
