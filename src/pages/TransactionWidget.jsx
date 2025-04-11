@@ -209,7 +209,6 @@ export const TransactionWidget = ({ uid }) => {
     }
   };
 
-
   // change page (pagination)
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -255,7 +254,7 @@ export const TransactionWidget = ({ uid }) => {
           <IconButton
             aria-label="close"
             onClick={() => setShowExportPopup(false)}
-            sx={{ position: "absolute", right: 8, top: 8 }}
+            sx={{ position: "absolute", right: 0, top: 0 }}
           >
             <CloseIcon />
           </IconButton>
