@@ -19,13 +19,13 @@ export const createUser = async (user, name) => {
         photoURL: user.photoURL || "",
         joinDate: new Date(),
       });
-      alert("User added");
+      // alert("User added");
     } catch (e) {
       alert(e.message);
     }
   } else {
     console.log("User data exists:", userData.data());
-    alert("User already exist");
+    // alert("User already exist");
   }
 
 };
