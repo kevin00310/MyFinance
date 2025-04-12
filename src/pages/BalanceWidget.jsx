@@ -85,11 +85,17 @@ export const BalanceWidget = ({ uid }) => {
         const baseURL = "https://myfinance-backend-pv55.onrender.com";
         const response = await axios.get(`${baseURL}/api/currency`);
         const data = response.data.data;
-        const currencyData = data.map((item) => item.currency_code);
-        const rates = data.reduce((acc, item) => {
+        
+        // filter with null buying_rate
+        const validCurrencies = data.filter(item => item.rate.buying_rate !== null);
+        
+        const currencyData = validCurrencies.map((item) => item.currency_code);
+        
+        const rates = validCurrencies.reduce((acc, item) => {
           acc[item.currency_code] = item.rate.buying_rate;
           return acc;
         }, {});
+        
         setCurrencies(currencyData);
         setExchangeRates(rates);
       } catch (error) {
@@ -252,8 +258,6 @@ export const BalanceWidget = ({ uid }) => {
       // }
     }
   };
-
-
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", p: 2 }}>
