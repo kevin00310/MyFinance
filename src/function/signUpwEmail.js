@@ -12,6 +12,8 @@ export async function signUpwEmail(email, password, name) {
     console.log("User UID:", user.uid);
     await createUser(user, name);
 
+    window.location.href = "/home";
+
     // // Send email using emailjs
     // const emailParams = {
     //   to_email: email,
