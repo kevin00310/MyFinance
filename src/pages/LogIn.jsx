@@ -4,10 +4,7 @@ import { auth } from "../firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { useUserAuth } from "../function/useUserAuth.js";
 import { signInwEmail } from "../function/signInwEmail.js";
-import {
-  signInUpwGoogle,
-  handleRedirectResult,
-} from "../function/signInUpwGoogle.js";
+import { signInUpwGoogle } from "../function/signInUpwGoogle.js";
 import {
   Container,
   Box,
@@ -73,7 +70,6 @@ function LogIn() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -113,15 +109,6 @@ function LogIn() {
     });
   };
 
-  useEffect(() => {
-    handleRedirectResult(navigate)
-      .catch((error) => {
-        console.error("Error during Google redirect handling:", error);
-        alert("Error during Google sign-in. Please try again.");
-      })
-      .finally(() => setLoading(false));
-  }, [navigate]);
-
   // reset password
   const handlePasswordReset = async () => {
     const email = window.prompt("Please enter your email for reset password:");
@@ -136,25 +123,6 @@ function LogIn() {
       alert(`Error: ${error.message}`);
     }
   };
-
-  // loading
-  if (loading) {
-    return (
-      <PageWrapper>
-        <HeaderSignIn />
-        <Box
-          sx={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          Loading...
-        </Box>
-      </PageWrapper>
-    );
-  }
 
   return (
     <PageWrapper>

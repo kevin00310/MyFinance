@@ -78,7 +78,7 @@ const Home = () => {
     fetchUserData();
   }, [user, loadingAuth, navigate]);
 
-  if (loading || loadingAuth) {
+  if (loading || loadingAuth || !userName) {
     return (
       <Loading
         user={user}

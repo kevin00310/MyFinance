@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserAuth } from "../function/useUserAuth.js";
 import { signUpwEmail } from "../function/signUpwEmail.js";
-import {
-  signInUpwGoogle,
-  handleRedirectResult,
-} from "../function/signInUpwGoogle.js";
+import { signInUpwGoogle } from "../function/signInUpwGoogle.js";
 import {
   Container,
   Box,
@@ -68,7 +65,6 @@ const GoogleButton = styled(Button)(({ theme }) => ({
 function SignUp() {
   useUserAuth();
 
-  const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -93,15 +89,6 @@ function SignUp() {
   };
 
   const dynamicPt = getDynamicPaddingTop();
-
-  useEffect(() => {
-    handleRedirectResult(navigate)
-      .catch((error) => {
-        console.error("Error during Google redirect handling:", error);
-        alert("Error during Google sign-in. Please try again.");
-      })
-      .finally(() => setLoading(false));
-  }, [navigate]);
 
   // sign up func
   const handleSignUpClick = (event) => {
@@ -130,31 +117,31 @@ function SignUp() {
 
   // sign up google func
   const SignUpGoogle = () => {
-    signInUpwGoogle(navigate, "/home").catch((error) => {
+    signInUpwGoogle().catch((error) => {
       console.error("Error during Google sign-up:", error);
       alert("Failed to sign up with Google. Please try again.");
     });
   };
 
   // loading
-  if (loading) {
-    return (
-      <PageWrapper>
-        <HeaderSignIn />
-        <Box
-          sx={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            pt: dynamicPt,
-          }}
-        >
-          Loading...
-        </Box>
-      </PageWrapper>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <PageWrapper>
+  //       <HeaderSignIn />
+  //       <Box
+  //         sx={{
+  //           flex: 1,
+  //           display: "flex",
+  //           alignItems: "center",
+  //           justifyContent: "center",
+  //           pt: dynamicPt,
+  //         }}
+  //       >
+  //         Loading...
+  //       </Box>
+  //     </PageWrapper>
+  //   );
+  // }
 
   return (
     <PageWrapper>

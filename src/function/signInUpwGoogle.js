@@ -1,13 +1,12 @@
 import {
   getAuth,
   signInWithPopup,
-  getRedirectResult,
   GoogleAuthProvider,
 } from "firebase/auth";
 import { providerGoogle } from "../firebase";
 import { createUser } from "../function/createUser";
 
-export const signInUpwGoogle = async (navigate, redirectTo = "/home") => {
+export const signInUpwGoogle = async () => {
   const auth = getAuth();
 
   try {
@@ -21,19 +20,18 @@ export const signInUpwGoogle = async (navigate, redirectTo = "/home") => {
 
     // Process user information
     const user = result.user;
-    const email =  user.email || "Email";
+    const email = user.email || "Email";
     console.log(email);
     const displayName = user.displayName || "User";
 
     console.log(`Signed in as: ${displayName}`);
 
-    // Check if a new user needs to be created
-    if (result.additionalUserInfo?.isNewUser) {
-      await createUser(user, displayName); // Create user in database
-    }
+    await createUser(user, displayName);
 
-    // Navigate to the intended route
-    navigate(redirectTo);
+    alert(`Welcome, ${email}`);
+
+    // Redirect to /home after alert
+    window.location.href = "/home";
   } catch (error) {
     console.error("Error during Google sign-in:", error);
 
@@ -50,20 +48,5 @@ export const signInUpwGoogle = async (navigate, redirectTo = "/home") => {
       default:
         alert("Failed to sign in with Google. Please try again.");
     }
-
-    // Explicitly prevent navigation if error occurs
-    return;
   }
-};
-
-export const handleRedirectResult = (navigate) => {
-  const auth = getAuth();
-  return getRedirectResult(auth).then((result) => {
-    if (result) {
-      // Process the result, e.g., navigate to the home page
-      navigate("/home");
-    }
-  }).catch((error) => {
-    console.error("Error handling redirect result:", error);
-  });
 };
