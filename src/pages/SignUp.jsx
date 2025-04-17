@@ -167,8 +167,8 @@ function SignUp() {
               <Box component="form" sx={{ textAlign: "center" }}>
                 <TextField
                   fullWidth
-                  label="Full Name"
-                  placeholder="Enter your full name"
+                  label="Username"
+                  placeholder="Enter your username"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   margin="normal"
