@@ -26,7 +26,7 @@ export const createUser = async (user, name) => {
 
       await sendEmail(user.email, name);
 
-      alert(`Sign up successful! Welcome, ${user.email}`);
+      // alert(`Sign up successful! Welcome, ${user.email}`);
       // alert("User added");
     } catch (e) {
       alert(e.message);

@@ -13,6 +13,7 @@ export async function signUpwEmail(email, password, name) {
     console.log(name)
     await createUser(user, name);
 
+    alert(`Welcome, ${user.email}`);
     //alert(`Sign-up successful! Welcome, ${user.email}`);
     window.location.href = "/home";
     
