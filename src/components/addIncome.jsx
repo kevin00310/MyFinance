@@ -89,11 +89,12 @@ const AddIncome = ({
           <InputLabel>Income Type</InputLabel>
           <Select value={selectedIncomeType} onChange={(e) => setSelectedIncomeType(e.target.value)} required>
             <MenuItem value="">-- Select Income --</MenuItem>
-            <MenuItem value="salary">Salary</MenuItem>
-            <MenuItem value="rent">Rent</MenuItem>
-            <MenuItem value="investment">Investment</MenuItem>
-            <MenuItem value="stock">Stock</MenuItem>
-            <MenuItem value="other">Other</MenuItem>
+            <MenuItem value="Salary">Salary</MenuItem>
+            <MenuItem value="Rent">Rent</MenuItem>
+            <MenuItem value="Investment">Investment</MenuItem>
+            <MenuItem value="Stock">Stock</MenuItem>
+            <MenuItem value="Extra Income">Extra Income</MenuItem>
+            <MenuItem value="Other">Other</MenuItem>
           </Select>
         </FormControl>
         <TextField

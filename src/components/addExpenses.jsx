@@ -90,8 +90,18 @@ const AddExpenses = ({
           <Select value={selectedExpensesType} onChange={(e) => setSelectedExpensesType(e.target.value)} required>
             <MenuItem value="">-- Select Expenses --</MenuItem>
             <MenuItem value="F&B">Food & Beverage</MenuItem>
+            <MenuItem value="Shopping">Shopping</MenuItem>
+            <MenuItem value="Entertainment">Entertainment</MenuItem>
             <MenuItem value="Rent">Rent</MenuItem>
             <MenuItem value="Transport">Transport</MenuItem>
+            <MenuItem value="Car">Car</MenuItem>
+            <MenuItem value="Travel">Travel</MenuItem>
+            <MenuItem value="Groceries">Groceries</MenuItem>
+            <MenuItem value="Sport & Hobbies">Shop & Hobbies</MenuItem>
+            <MenuItem value="Education">Education</MenuItem>
+            <MenuItem value="Work">Work</MenuItem>
+            <MenuItem value="Loan">Loan</MenuItem>
+            <MenuItem value="Bills & Fees">Bills & Fees</MenuItem>
             <MenuItem value="Other">Other</MenuItem>
           </Select>
         </FormControl>

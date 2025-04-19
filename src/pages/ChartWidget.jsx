@@ -32,23 +32,23 @@ export const ChartWidget = ({ uid }) => {
       return { 
         barWidth: 350, 
         barHeight: 180, 
-        pieWidth: 250, 
-        pieHeight: 160, 
+        pieWidth: 300,
+        pieHeight: 200, 
         gap: 0
       };
     } else if (isXsScreen) {
       return { 
         barWidth: 350, 
         barHeight: 200, 
-        pieWidth: 330, 
-        pieHeight: 180, 
+        pieWidth: 350, 
+        pieHeight: 200, 
         gap: 0
       };
     } else if (isSmScreen) {
       return { 
-        barWidth: 400, 
+        barWidth: 350, 
         barHeight: 250, 
-        pieWidth: 350, 
+        pieWidth: 400, 
         pieHeight: 200, 
         gap: 1
       };
@@ -56,7 +56,7 @@ export const ChartWidget = ({ uid }) => {
       return { 
         barWidth: 400, 
         barHeight: 250, 
-        pieWidth: 350, 
+        pieWidth: 450, 
         pieHeight: 200, 
         gap: 3
       };
@@ -64,7 +64,7 @@ export const ChartWidget = ({ uid }) => {
       return { 
         barWidth: 500, 
         barHeight: 300, 
-        pieWidth: 400, 
+        pieWidth: 450, 
         pieHeight: 200, 
         gap: 2
       };
@@ -73,7 +73,7 @@ export const ChartWidget = ({ uid }) => {
 
   const { barWidth, barHeight, pieWidth, pieHeight, gap } = getChartDimensions();
 
-  // Fetch transactions
+  // fetch transactions
   useEffect(() => {
     const fetchTransactions = async () => {
       const fetchedTransactions = await getTransaction(uid);
@@ -92,7 +92,7 @@ export const ChartWidget = ({ uid }) => {
     : [...Array(selectedYear === currentYear.toString() ? currentMonth : 12).keys()]
         .map(i => i + 1);
 
-  // Get data for bar chart
+  // get data for bar chart
   const getBarChartData = () => {
     let xAxisData = [];
     let incomeData = [];
@@ -151,7 +151,7 @@ export const ChartWidget = ({ uid }) => {
     return { xAxisData, incomeData, expensesData };
   };
 
-  // Get data for pie chart
+  // get data for pie chart
   const getPieChartData = () => {
     const filtered = transactions.filter(t => {
       const [year, month] = t.date.split('-');
@@ -177,22 +177,38 @@ export const ChartWidget = ({ uid }) => {
         .forEach(t => {
           typeData[t.type] = (typeData[t.type] || 0) + t.convertedAmount;
         });
-      pieData = Object.entries(typeData).map(([type, value], index) => ({
+
+      // convert to array & sort by value
+      let typeArray = Object.entries(typeData).map(([type, value], index) => ({
         id: index,
         value,
         label: type,
         color: `hsl(${index * 60}, 70%, 50%)`
-      }));
+      })).sort((a, b) => b.value - a.value);
+
+      // grp small slices into "Other"
+      const maxSlices = 6;
+      if (typeArray.length > maxSlices) {
+        const other = typeArray.slice(maxSlices - 1).reduce((acc, curr) => ({
+          id: maxSlices,
+          value: acc.value + curr.value,
+          label: 'Other',
+          color: `hsl(${maxSlices * 60}, 70%, 50%)`
+        }), { value: 0 });
+        typeArray = [...typeArray.slice(0, maxSlices - 1), other];
+      }
+
+      pieData = typeArray;
     }
 
-    // Calculate the total sum of all values for percentage calculation
+    // calc total sum of all values for %
     const total = pieData.reduce((sum, item) => sum + item.value, 0);
 
-    // Add percentage to each item for display in arcLabel
+    // add % to each item for display in labels
     return {
       pieData: pieData.map(item => ({
         ...item,
-        percentage: total > 0 ? (item.value / total) * 100 : 0, // Calculate percentage
+        percentage: total > 0 ? (item.value / total) * 100 : 0,
       })),
       total,
     };
@@ -216,7 +232,7 @@ export const ChartWidget = ({ uid }) => {
           flexDirection: 'row',
           alignItems: 'center'
         }}>
-          {/* Year & month dropdown */}
+          {/* year & month dropdown */}
           <FormControl sx={{ minWidth: 100, width: { xs: '100%', sm: 100 } }}>
             <InputLabel sx={{ fontSize: '0.9rem' }}>Year</InputLabel>
             <Select
@@ -304,17 +320,23 @@ export const ChartWidget = ({ uid }) => {
           <PieChart
             series={[{
               data: pieData,
-              arcLabel: (item) => `${item.percentage.toFixed(1)}%`, // Display percentage
-              arcLabelMinAngle: 35,
-              arcLabelRadius: '60%',
+              arcLabel: isXxsScreen ? () => '' : (item) => `${item.percentage.toFixed(1)}%`,
+              arcLabelMinAngle: 45,
+              arcLabelRadius: isXsScreen ? '70%' : '60%',
+              innerRadius: 0,
+              outerRadius: isXxsScreen ? 80 : 100, // radius to fit labels
+              paddingAngle: pieData.length > 4 ? 2 : 0, // padding for many slices
+              highlightScope: { faded: 'global', highlighted: 'item' },
             }]}
             sx={{
               [`& .${pieArcLabelClasses.root}`]: {
                 fontWeight: 'bold',
+                fontSize: isXxsScreen ? '0.7rem' : '0.8rem',
               },
             }}
             width={pieWidth}
             height={pieHeight}
+            margin={{ right: isXxsScreen ? 100 : 150 }} // space for labels
           />
         </Box>
       </Box>
