@@ -19,8 +19,11 @@ export async function signUpwEmail(email, password, name) {
     
   } catch (error) {
     const errorCode = error.code;
+    console.log(errorCode);
     const errorMessage = error.message;
-    alert(`Error ${errorCode}: ${errorMessage}`);
+    console.log(errorMessage);
+    // alert(`Error ${errorCode}: ${errorMessage}`);
+    alert("Email already in use, please try another.");
   }
 }
 
