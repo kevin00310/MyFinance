@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { useUserAuth } from "../function/useUserAuth.js";
@@ -172,6 +172,16 @@ function LogIn() {
                 >
                   Log In
                 </LoginButton>
+                <Typography variant="body2" color="text.secondary">
+                Forgot Password?{" "}
+                <Link
+                  component="button"
+                  onClick={handlePasswordReset}
+                  sx={{ color: "#3b82f6" }}
+                >
+                  Click Here
+                </Link>
+              </Typography>
               </Box>
               <Box sx={{ my: 1 }}>
                 <Divider>or</Divider>
@@ -181,14 +191,12 @@ function LogIn() {
                   Sign In with Google
                 </GoogleButton>
               </Box>
-              <Typography variant="body2" color="text.secondary">
-                Forgot Password?{" "}
-                <Link
-                  component="button"
-                  onClick={handlePasswordReset}
-                  sx={{ color: "#3b82f6" }}
-                >
-                  Click Here
+              
+              <Box sx={{ my: 1 }}></Box>
+              <Typography variant="body2" color="text.secondary" align="center">
+                Don't Have Account?{" "}
+                <Link component={RouterLink} to="/" style={{ color: "#3b82f6" }}>
+                  Sign up now 
                 </Link>
               </Typography>
             </CardContent>

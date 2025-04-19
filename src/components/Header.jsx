@@ -74,6 +74,7 @@ const Header = ({
           {/* MyFinance Title */}
           <Typography
             variant="h6"
+            fontWeight="bold"
             sx={{ flexGrow: 1 }}
             component={Link}
             to="/Home"
