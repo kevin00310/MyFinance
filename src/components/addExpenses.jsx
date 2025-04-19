@@ -97,11 +97,11 @@ const AddExpenses = ({
             <MenuItem value="Car">Car</MenuItem>
             <MenuItem value="Travel">Travel</MenuItem>
             <MenuItem value="Groceries">Groceries</MenuItem>
-            <MenuItem value="Sport & Hobbies">Shop & Hobbies</MenuItem>
+            <MenuItem value="S&H">Shop & Hobbies</MenuItem>
             <MenuItem value="Education">Education</MenuItem>
             <MenuItem value="Work">Work</MenuItem>
             <MenuItem value="Loan">Loan</MenuItem>
-            <MenuItem value="Bills & Fees">Bills & Fees</MenuItem>
+            <MenuItem value="B&F">Bills & Fees</MenuItem>
             <MenuItem value="Other">Other</MenuItem>
           </Select>
         </FormControl>
