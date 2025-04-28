@@ -12,13 +12,14 @@ import {
   TextField,
   Button,
   Divider,
+  Snackbar,
+  Alert,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import HeaderSignIn from "../components/HeaderSignIn";
 
-// entire page background is consistent
 const PageWrapper = styled(Box)({
   minHeight: "100vh",
   width: "100%",
@@ -29,7 +30,6 @@ const PageWrapper = styled(Box)({
   flexDirection: "column",
 });
 
-// form style
 const StyledCard = styled(Card)(({ theme }) => ({
   borderRadius: 12,
   boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
@@ -39,7 +39,6 @@ const StyledCard = styled(Card)(({ theme }) => ({
   textAlign: "center",
 }));
 
-// sign up btn style
 const StyledButton = styled(Button)(({ theme }) => ({
   width: 200,
   padding: theme.spacing(1.25, 0),
@@ -50,7 +49,6 @@ const StyledButton = styled(Button)(({ theme }) => ({
   textTransform: "none",
 }));
 
-// google btn style
 const GoogleButton = styled(Button)(({ theme }) => ({
   width: "48%",
   padding: theme.spacing(1, 0),
@@ -69,28 +67,29 @@ function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [comPassword, setComPassword] = useState("");
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = 'Sign Up';
+    document.title = "Sign Up";
   }, []);
 
   const theme = useTheme();
-  const isXsScreen = useMediaQuery(theme.breakpoints.down("sm")); // < 600px
-  const isSmScreen = useMediaQuery(theme.breakpoints.between("sm", "md")); // 600px - 899px
-  const isMdScreen = useMediaQuery(theme.breakpoints.up("md")); // >= 900px
+  const isXsScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const isSmScreen = useMediaQuery(theme.breakpoints.between("sm", "md"));
+  const isMdScreen = useMediaQuery(theme.breakpoints.up("md"));
 
-  // adjust top padding based on screen size
   const getDynamicPaddingTop = () => {
-    if (isXsScreen) return 6; // 16px for extra small screens
-    if (isSmScreen) return 8; // 32px for small screens
-    if (isMdScreen) return 8; // 48px for medium and larger screens
-    return 8; // default fallback
+    if (isXsScreen) return 6;
+    if (isSmScreen) return 8;
+    if (isMdScreen) return 8;
+    return 8;
   };
 
   const dynamicPt = getDynamicPaddingTop();
 
-  // sign up func
+  const handleSnackbarClose = () => setSnackbar({ ...snackbar, open: false });
+
   const handleSignUpClick = (event) => {
     event.preventDefault();
     if (name && email && password && comPassword) {
@@ -100,48 +99,25 @@ function SignUp() {
             .then(() => navigate("/home"))
             .catch((error) => {
               console.error("Error during email sign-up:", error);
-              alert(
-                "Failed to sign up. Please check your details and try again."
-              );
+              setSnackbar({ open: true, message: "Failed to sign up. Please check your details and try again.", severity: "error" });
             });
         } else {
-          alert("Password must be at least 8 characters long.");
+          setSnackbar({ open: true, message: "Password must be at least 8 characters long.", severity: "warning" });
         }
       } else {
-        alert("Passwords do not match.");
+        setSnackbar({ open: true, message: "Passwords do not match.", severity: "warning" });
       }
     } else {
-      alert("All fields are required.");
+      setSnackbar({ open: true, message: "All fields are required.", severity: "warning" });
     }
-  };  
+  };
 
-  // sign up google func
   const SignUpGoogle = () => {
     signInUpwGoogle().catch((error) => {
       console.error("Error during Google sign-up:", error);
-      alert("Failed to sign up with Google. Please try again.");
+      setSnackbar({ open: true, message: "Failed to sign up with Google. Please try again.", severity: "error" });
     });
   };
-
-  // loading
-  // if (loading) {
-  //   return (
-  //     <PageWrapper>
-  //       <HeaderSignIn />
-  //       <Box
-  //         sx={{
-  //           flex: 1,
-  //           display: "flex",
-  //           alignItems: "center",
-  //           justifyContent: "center",
-  //           pt: dynamicPt,
-  //         }}
-  //       >
-  //         Loading...
-  //       </Box>
-  //     </PageWrapper>
-  //   );
-  // }
 
   return (
     <PageWrapper>
@@ -234,6 +210,15 @@ function SignUp() {
           </StyledCard>
         </Container>
       </Box>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={handleSnackbarClose}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbar.severity}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </PageWrapper>
   );
 }

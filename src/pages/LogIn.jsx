@@ -6,6 +6,9 @@ import { useUserAuth } from "../function/useUserAuth.js";
 import { signInwEmail } from "../function/signInwEmail.js";
 import { signInUpwGoogle } from "../function/signInUpwGoogle.js";
 import {
+  Modal,
+  Snackbar,
+  Alert,
   Container,
   Box,
   Typography,
@@ -20,8 +23,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import HeaderSignIn from "../components/HeaderSignIn";
+import ResetPasswordModal from "../components/resetPassword";
 
-// entire page background is consistent
 const PageWrapper = styled(Box)({
   minHeight: "100vh",
   width: "100%",
@@ -32,7 +35,6 @@ const PageWrapper = styled(Box)({
   flexDirection: "column",
 });
 
-// form style
 const StyledCard = styled(Card)(({ theme }) => ({
   borderRadius: 12,
   boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
@@ -42,7 +44,6 @@ const StyledCard = styled(Card)(({ theme }) => ({
   textAlign: "center",
 }));
 
-// login btn style
 const LoginButton = styled(Button)(({ theme }) => ({
   width: 200,
   padding: theme.spacing(1.25, 0),
@@ -53,7 +54,6 @@ const LoginButton = styled(Button)(({ theme }) => ({
   textTransform: "none",
 }));
 
-// google btn style
 const GoogleButton = styled(Button)(({ theme }) => ({
   width: "48%",
   padding: theme.spacing(1, 0),
@@ -70,57 +70,46 @@ function LogIn() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [notification, setNotification] = useState({ open: false, message: "", severity: "info" });
+  const [open, setOpen] = useState(false);
+
   const navigate = useNavigate();
 
-  useEffect(() => {
-    document.title = 'Log In';
-  }, []);
-
-  const theme = useTheme();
-  const isXsScreen = useMediaQuery(theme.breakpoints.down("sm")); // < 600px
-  const isSmScreen = useMediaQuery(theme.breakpoints.between("sm", "md")); // 600px - 899px
-  const isMdScreen = useMediaQuery(theme.breakpoints.up("md")); // >= 900px
-
-  // adjust top padding based on screen size
-  const getDynamicPaddingTop = () => {
-    if (isXsScreen) return 2; // 32px
-    if (isSmScreen) return 4; // 48px 
-    if (isMdScreen) return 6; // 64px 
-    return 8; 
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => {
+    setEmail("");
+    setNotification({ open: false, message: "", severity: "info" });
+    setOpen(false);
   };
 
-  const dynamicPt = getDynamicPaddingTop();
+  const showNotification = (message, severity) => {
+    setNotification({ open: true, message, severity });
+  };
 
-  // sign in func
   const handleSignInClick = (event) => {
     event.preventDefault();
     if (email && password) {
-      signInwEmail(email, password);
+      signInwEmail(email, password).catch((error) =>
+        showNotification("Email or Password not match.", "error")
+      );
     } else {
-      alert("Email or Password not match.");
+      showNotification("Please enter both email and password.", "warning");
     }
   };
 
-  // google sign in func
   const SignInGoogle = () => {
     signInUpwGoogle(navigate, "/home").catch((error) => {
       console.error("Error during Google sign-in:", error);
-      alert("Failed to sign in with Google. Please try again.");
+      showNotification("Failed to sign in with Google. Please try again.", "error");
     });
   };
 
-  // reset password
-  const handlePasswordReset = async () => {
-    const email = window.prompt("Please enter your email for reset password:");
-    if (!email) {
-      alert("Email is required to reset the password.");
-      return;
-    }
+  const handleResetPassword = async () => {
     try {
       await sendPasswordResetEmail(auth, email);
-      alert("Password reset email sent successfully. Please check your inbox.");
+      showNotification("Password reset email sent! Check your inbox.", "success");
     } catch (error) {
-      alert(`Error: ${error.message}`);
+      showNotification(`Error: ${error.message}`, "error");
     }
   };
 
@@ -133,7 +122,7 @@ function LogIn() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          pt: dynamicPt, 
+          pt: 8,
         }}
       >
         <Container sx={{ display: "flex", justifyContent: "center" }}>
@@ -173,15 +162,18 @@ function LogIn() {
                   Log In
                 </LoginButton>
                 <Typography variant="body2" color="text.secondary">
-                Forgot Password?{" "}
-                <Link
-                  component="button"
-                  onClick={handlePasswordReset}
-                  sx={{ color: "#3b82f6" }}
-                >
-                  Click Here
-                </Link>
-              </Typography>
+                  Forgot Password?{" "}
+                  <Link
+                    component="button"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      handleOpen();
+                    }}
+                    sx={{ color: "#3b82f6" }}
+                  >
+                    Click Here
+                  </Link>
+                </Typography>
               </Box>
               <Box sx={{ my: 1 }}>
                 <Divider>or</Divider>
@@ -191,18 +183,38 @@ function LogIn() {
                   Sign In with Google
                 </GoogleButton>
               </Box>
-              
-              <Box sx={{ my: 1 }}></Box>
               <Typography variant="body2" color="text.secondary" align="center">
                 Don't Have Account?{" "}
                 <Link component={RouterLink} to="/" style={{ color: "#3b82f6" }}>
-                  Sign up now 
+                  Sign up now
                 </Link>
               </Typography>
             </CardContent>
           </StyledCard>
         </Container>
       </Box>
+      <ResetPasswordModal
+        open={open}
+        handleClose={handleClose}
+        email={email}
+        setEmail={setEmail}
+        handleResetPassword={handleResetPassword}
+        message={notification.message}
+        severity={notification.severity}
+      />
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={() => setNotification({ ...notification, open: false })}
+      >
+        <Alert
+          onClose={() => setNotification({ ...notification, open: false })}
+          severity={notification.severity}
+          sx={{ width: "100%" }}
+        >
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </PageWrapper>
   );
 }

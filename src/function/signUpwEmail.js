@@ -23,7 +23,7 @@ export async function signUpwEmail(email, password, name) {
     const errorMessage = error.message;
     console.log(errorMessage);
     // alert(`Error ${errorCode}: ${errorMessage}`);
-    alert("Email already in use, please try another.");
+    alert("Invalid email, please try another.");
   }
 }
 
