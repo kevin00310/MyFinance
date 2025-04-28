@@ -28,6 +28,8 @@ import {
   IconButton,
   TablePagination,
   Checkbox,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -42,6 +44,8 @@ export const TransactionWidget = ({ uid }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selectedTransactions, setSelectedTransactions] = useState([]);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     const storedTransactions = JSON.parse(localStorage.getItem("transactions")) || [];
@@ -201,11 +205,15 @@ export const TransactionWidget = ({ uid }) => {
 
       // Clear the selected transactions
       setSelectedTransactions([]);
-
-      alert("Selected transactions deleted successfully!");
+      
+      // alert("Selected transactions deleted successfully!");
+      setSnackbarMessage("Selected transactions deleted successfully!");
+      setSnackbarOpen(true);
     } catch (error) {
       console.error("Error deleting selected transactions:", error);
-      alert("Failed to delete selected transactions. Please try again.");
+      // alert("Failed to delete selected transactions. Please try again.");
+      setSnackbarMessage("Failed to delete selected transactions. Please try again.");
+      setSnackbarOpen(true);
     }
   };
 

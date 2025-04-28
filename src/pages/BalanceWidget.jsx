@@ -4,7 +4,7 @@ import { getTransaction } from "../function/getTransaction";
 import { deleteTransaction } from "../function/deleteTransaction";
 import axios from "axios";
 import moment from "moment";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, Snackbar, Alert, } from "@mui/material";
 import AddIncome from "../components/addIncome.jsx";
 import AddExpenses from "../components/addExpenses.jsx";
 import AddBalance from "../components/addBalance.jsx";
@@ -29,6 +29,8 @@ export const BalanceWidget = ({ uid }) => {
   const [selectedBalanceAmount, setSelectedBalanceAmount] = useState("");
   const [isAddBalanceModalVisible, setAddBalanceModalVisible] = useState(false);
   const [isConfirmResetModalVisible, setConfirmResetModalVisible] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   useEffect(() => {
     console.log("User UID in BalanceWidget:", uid);
@@ -132,10 +134,12 @@ export const BalanceWidget = ({ uid }) => {
   // add income
   const addIncome = () => {
     if (!selectedIncomeAmount || !selectedIncomeName || !selectedCurrency || !selectedIncomeType || !selectedIncomeDate) {
-      alert("Please fill out all fields!");
+      setSnackbarMessage("Please fill out all fields!");
+      setSnackbarOpen(true);
       return;
     } else if (selectedIncomeAmount <= 0) {
-      alert("Amount must be POSITIVE!");
+      setSnackbarMessage("Amount must be POSITIVE!");
+      setSnackbarOpen(true);
       return;
     }
     const convertAmount = calculateConvertedAmount();
@@ -157,10 +161,12 @@ export const BalanceWidget = ({ uid }) => {
   // add expenses
   const addExpenses = () => {
     if (!selectedExpensesAmount || !selectedExpensesName || !selectedCurrency || !selectedExpensesType || !selectedExpensesDate) {
-      alert("Please fill out all fields!");
+      setSnackbarMessage("Please fill out all fields!");
+      setSnackbarOpen(true);
       return;
     } else if (selectedExpensesAmount <= 0) {
-      alert("Amount must be POSITIVE!");
+      setSnackbarMessage("Amount must be POSITIVE!");
+      setSnackbarOpen(true);
       return;
     }
     const convertAmount = calculateConvertedAmount();
@@ -182,10 +188,12 @@ export const BalanceWidget = ({ uid }) => {
   // add balance
   const addBalance = () => {
     if (!selectedBalanceAmount || !selectedCurrency) {
-      alert("Please fill out all fields!");
+      setSnackbarMessage("Please fill out all fields!");
+      setSnackbarOpen(true);
       return;
     } else if (selectedBalanceAmount <= 0) {
-      alert("Amount must be POSITIVE!");
+      setSnackbarMessage("Amount must be POSITIVE!");
+      setSnackbarOpen(true);
       return;
     }
     const convertAmount = calculateConvertedAmount();

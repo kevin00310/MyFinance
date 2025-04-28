@@ -23,8 +23,8 @@ const WidgetContainer = styled(Paper)(({ theme }) => ({
 }));
 
 const ScrollableContent = styled(Box)(({ theme }) => ({
-  height: "calc(100vh - 64px)", // Adjust based on Header height (default AppBar height is 64px)
-  overflowY: "auto", // Enable vertical scrolling
+  height: "calc(100vh - 64px)", 
+  overflowY: "auto", 
   paddingTop: theme.spacing(2), // Match Container's py: 2
   paddingBottom: theme.spacing(2),
 }));
