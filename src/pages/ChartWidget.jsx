@@ -19,6 +19,7 @@ export const ChartWidget = ({ uid }) => {
   const [selectedMonth, setSelectedMonth] = useState((new Date().getMonth() + 1).toString());
   const [pieFilter, setPieFilter] = useState('All');
 
+
   const theme = useTheme();
   const isXxsScreen = useMediaQuery('(max-width:400px)');
   const isXsScreen = useMediaQuery(theme.breakpoints.between('xs', 'sm'));

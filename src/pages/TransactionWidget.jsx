@@ -44,8 +44,19 @@ export const TransactionWidget = ({ uid }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selectedTransactions, setSelectedTransactions] = useState([]);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+
+  const showSnackbar = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+  
+  const closeSnackbar = () => {
+    setSnackbarOpen(false);
+  };
 
   useEffect(() => {
     const storedTransactions = JSON.parse(localStorage.getItem("transactions")) || [];
@@ -193,6 +204,7 @@ export const TransactionWidget = ({ uid }) => {
   // Handle delete button click
   const handleDeleteSelected = async () => {
     try {
+      showSnackbar("Selected transactions deleted successfully!", "success");
       // Delete the selected transactions from Firestore
       await deleteField(uid, selectedTransactions);
 
@@ -207,13 +219,10 @@ export const TransactionWidget = ({ uid }) => {
       setSelectedTransactions([]);
       
       // alert("Selected transactions deleted successfully!");
-      setSnackbarMessage("Selected transactions deleted successfully!");
-      setSnackbarOpen(true);
     } catch (error) {
       console.error("Error deleting selected transactions:", error);
       // alert("Failed to delete selected transactions. Please try again.");
-      setSnackbarMessage("Failed to delete selected transactions. Please try again.");
-      setSnackbarOpen(true);
+      showSnackbar("Failed to delete selected transactions. Please try again.");
     }
   };
 
@@ -393,6 +402,17 @@ export const TransactionWidget = ({ uid }) => {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+
+      {/* Snackbar for alerts */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={closeSnackbar}
+      >
+        <Alert onClose={closeSnackbar} severity={snackbarSeverity} sx={{ width: "100%" }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

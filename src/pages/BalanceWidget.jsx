@@ -31,10 +31,22 @@ export const BalanceWidget = ({ uid }) => {
   const [isConfirmResetModalVisible, setConfirmResetModalVisible] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   useEffect(() => {
     console.log("User UID in BalanceWidget:", uid);
   }, [uid]);
+
+  const showSnackbar = (message, severity) => {
+    setSnackbarMessage(message);
+    setSnackbarSeverity(severity);
+    setSnackbarOpen(true);
+  };
+  
+  const closeSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+  
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -134,89 +146,94 @@ export const BalanceWidget = ({ uid }) => {
   // add income
   const addIncome = () => {
     if (!selectedIncomeAmount || !selectedIncomeName || !selectedCurrency || !selectedIncomeType || !selectedIncomeDate) {
-      setSnackbarMessage("Please fill out all fields!");
-      setSnackbarOpen(true);
+      showSnackbar("Please fill out all fields!");
       return;
     } else if (selectedIncomeAmount <= 0) {
-      setSnackbarMessage("Amount must be POSITIVE!");
-      setSnackbarOpen(true);
+      showSnackbar("Amount must be POSITIVE!");
       return;
     }
-    const convertAmount = calculateConvertedAmount();
-    const newTransaction = {
-      uid,
-      transaction: "Income",
-      type: selectedIncomeType,
-      amount: parseFloat(selectedIncomeAmount),
-      convertedAmount: convertAmount,
-      tag: selectedCurrency,
-      date: moment(selectedIncomeDate).format("YYYY-MM-DD"),
-      name: selectedIncomeName,
-    };
-    setTransactions([...transactions, newTransaction]);
-    addTransaction(newTransaction);
-    closeAddIncomeModal();
+
+    showSnackbar("Income added successfully!", "success");
+    setTimeout(() => {
+      const convertAmount = calculateConvertedAmount();
+      const newTransaction = {
+        uid,
+        transaction: "Income",
+        type: selectedIncomeType,
+        amount: parseFloat(selectedIncomeAmount),
+        convertedAmount: convertAmount,
+        tag: selectedCurrency,
+        date: moment(selectedIncomeDate).format("YYYY-MM-DD"),
+        name: selectedIncomeName,
+      };
+      setTransactions([...transactions, newTransaction]);
+      addTransaction(newTransaction);
+      closeAddIncomeModal();
+    }, 3000);
   };
 
   // add expenses
   const addExpenses = () => {
     if (!selectedExpensesAmount || !selectedExpensesName || !selectedCurrency || !selectedExpensesType || !selectedExpensesDate) {
-      setSnackbarMessage("Please fill out all fields!");
-      setSnackbarOpen(true);
+      showSnackbar("Please fill out all fields!");
       return;
     } else if (selectedExpensesAmount <= 0) {
-      setSnackbarMessage("Amount must be POSITIVE!");
-      setSnackbarOpen(true);
+      showSnackbar("Amount must be POSITIVE!");
       return;
     }
-    const convertAmount = calculateConvertedAmount();
-    const newTransaction = {
-      uid,
-      transaction: "Expenses",
-      type: selectedExpensesType,
-      amount: parseFloat(selectedExpensesAmount),
-      convertedAmount: convertAmount,
-      tag: selectedCurrency,
-      date: moment(selectedExpensesDate).format("YYYY-MM-DD"),
-      name: selectedExpensesName,
-    };
-    setTransactions([...transactions, newTransaction]);
-    addTransaction(newTransaction);
-    closeAddExpensesModal();
+    showSnackbar("Expenses added successfully!", "success");
+    setTimeout(() => {
+      const convertAmount = calculateConvertedAmount();
+      const newTransaction = {
+        uid,
+        transaction: "Expenses",
+        type: selectedExpensesType,
+        amount: parseFloat(selectedExpensesAmount),
+        convertedAmount: convertAmount,
+        tag: selectedCurrency,
+        date: moment(selectedExpensesDate).format("YYYY-MM-DD"),
+        name: selectedExpensesName,
+      };
+      setTransactions([...transactions, newTransaction]);
+      addTransaction(newTransaction);
+      closeAddExpensesModal();
+    }, 3000);
   };
 
   // add balance
   const addBalance = () => {
     if (!selectedBalanceAmount || !selectedCurrency) {
-      setSnackbarMessage("Please fill out all fields!");
-      setSnackbarOpen(true);
+      showSnackbar("Please fill out all fields!");
       return;
     } else if (selectedBalanceAmount <= 0) {
-      setSnackbarMessage("Amount must be POSITIVE!");
-      setSnackbarOpen(true);
+      showSnackbar("Amount must be POSITIVE!");
       return;
     }
-    const convertAmount = calculateConvertedAmount();
-    const balanceDate = new Date();
-    const newTransaction = {
-      uid,
-      transaction: "Balance",
-      type: "Balance",
-      amount: parseFloat(selectedBalanceAmount),
-      convertedAmount: convertAmount,
-      tag: selectedCurrency,
-      date: moment(balanceDate).format("YYYY-MM-DD"),
-      name: "Balance",
-    };
-    setTransactions([...transactions, newTransaction]);
-    addTransaction(newTransaction);
-    closeAddBalanceModal();
+    showSnackbar("Added balance!", "success");
+    setTimeout(() => {
+      const convertAmount = calculateConvertedAmount();
+      const balanceDate = new Date();
+      const newTransaction = {
+        uid,
+        transaction: "Balance",
+        type: "Balance",
+        amount: parseFloat(selectedBalanceAmount),
+        convertedAmount: convertAmount,
+        tag: selectedCurrency,
+        date: moment(balanceDate).format("YYYY-MM-DD"),
+        name: "Balance",
+      };
+      setTransactions([...transactions, newTransaction]);
+      addTransaction(newTransaction);
+      closeAddBalanceModal();
+    }, 3000);
   };
 
   // reset transactions
   const resetTransactions = async () => {
     let operationFailed = false;
     try {
+      showSnackbar("Reset successfully!", "success");
       console.log("Starting resetTransactions...");
       const collectionPath = `users/${uid}/transactions`;
       await deleteTransaction(collectionPath);
@@ -233,7 +250,8 @@ export const BalanceWidget = ({ uid }) => {
         // collection is empty, consider the operation successful
         setTransactions([]);
         setBalance(0);
-        alert("All transaction data has been cleared!");
+        showSnackbar("All transaction data has been cleared!");
+        // alert("All transaction data has been cleared!");
         window.location.reload();
       } else {
         // some documents remain, operation failed
@@ -317,6 +335,17 @@ export const BalanceWidget = ({ uid }) => {
         onClose={closeConfirmResetModal}
         resetTransactions={resetTransactions}
       />
+
+      {/* Snackbar for alerts */}
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={closeSnackbar}
+      >
+        <Alert onClose={closeSnackbar} severity={snackbarSeverity} sx={{ width: "100%" }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
