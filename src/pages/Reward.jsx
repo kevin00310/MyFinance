@@ -9,7 +9,8 @@ import Header from "../components/Header";
 import Loading from "../pages/Loading";
 import RewardCard from "../components/RewardCard";
 
-// Import images
+// import images
+import myFin from "../img/logo.png";
 import chageeImage from "../img/rewardImg/chagee.png";
 import ewalletImage from "../img/rewardImg/tng.png";
 import kenanganImage from "../img/rewardImg/kenangan.png";
@@ -21,7 +22,7 @@ import shopeeImage from "../img/rewardImg/shopee.png";
 import taobaoImage from "../img/rewardImg/taobao.png";
 import zusImage from "../img/rewardImg/zus.png";
 
-// Ensure the entire page background is consistent
+// ensure entire page background is consistent
 const PageWrapper = styled(Box)({
   height: "100vh",
   width: "100%",
@@ -32,7 +33,7 @@ const PageWrapper = styled(Box)({
   flexDirection: "column",
 });
 
-// Make the content scrollable while keeping the header fixed
+// content scrollable while keeping the header fixed
 const ScrollableContent = styled(Box)(({ theme }) => ({
   height: "calc(100vh - 64px)",
   overflowY: "auto",
@@ -40,7 +41,7 @@ const ScrollableContent = styled(Box)(({ theme }) => ({
   paddingBottom: theme.spacing(2),
 }));
 
-// Style for the popup modal, matching ProfileModal in Header.jsx
+// style for popup modal, matching ProfileModal in Header.jsx
 const RewardModal = styled(Paper)(({ theme }) => ({
   position: "absolute",
   width: 300,
@@ -54,6 +55,7 @@ const RewardModal = styled(Paper)(({ theme }) => ({
 
 // Map reward titles to images
 const imageMap = {
+  "Opps, some problem here": myFin,
   "E-wallet": ewalletImage,
   Shopee: shopeeImage,
   Lazada: lazadaImage,
@@ -85,7 +87,7 @@ export default function Reward() {
     document.title = 'Reward';
   }, []);
 
-  // Fetch user data and handle authentication
+  // fetch user data & handle authentication
   useEffect(() => {
     const fetchUserData = async () => {
       if (user) {
@@ -99,7 +101,7 @@ export default function Reward() {
           (today - creationTime) / (1000 * 60 * 60 * 24)
         );
         setDaysJoined(differenceInDays);
-        console.log("Days Joined:", differenceInDays); // Debug log
+        console.log("Days Joined:", differenceInDays);
 
         const userRef = doc(db, "users", currentUid);
         const userData = await getDoc(userRef);
@@ -114,7 +116,7 @@ export default function Reward() {
     fetchUserData();
   }, [user, loadingAuth, navigate]);
 
-  // Load rewards from RewardDetail.txt
+  // load rewards from RewardDetail.txt
   useEffect(() => {
     fetch("/RewardDetail.txt")
       .then((response) => response.text())
@@ -126,7 +128,7 @@ export default function Reward() {
             title: title.trim(),
             description: description.trim(),
             value: value.trim(),
-            link: link.trim(), // Add link here
+            link: link.trim(), 
             imageSrc: imageMap[title.trim()] || "",
           };
         });
@@ -138,20 +140,12 @@ export default function Reward() {
         setError("Failed to load rewards. Using default rewards.");
         const defaultRewards = [
           {
-            title: "E-wallet",
-            description: "Enjoy RM 15 voucher off",
-            value: "RM 15",
-            link: "https://example.com/ewallet", // Example default link
-            imageSrc: imageMap["E-wallet"],
+            title: "Opps, some problem here",
+            description: "Some problem here, we are fixing it. Please come back later!!",
+            value: "Free",
+            link: "/",
+            imageSrc: imageMap["Opps, some problem here"],
           },
-          {
-            title: "Shopee",
-            description: "Enjoy 15% voucher off",
-            value: "15%",
-            link: "https://example.com/shopee", // Example default link
-            imageSrc: imageMap["Shopee"],
-          },
-          // Add other default rewards if needed
         ];
         setRewards(defaultRewards);
         setLoading(false);
@@ -229,7 +223,7 @@ export default function Reward() {
         <Container>
           <Grid container spacing={3} justifyContent="center">
             {rewards.map((reward, index) => {
-              // Calculate unlock requirements using daysJoined from Header.jsx
+              // calc unlock requirements using daysJoined from Header.jsx
               const requiredDays = (index + 1) * 10; // Changed multiplier to 10
               const isClickable = daysJoined >= requiredDays;
               const unlockDays = requiredDays - daysJoined > 0 ? requiredDays - daysJoined : 0;
@@ -262,30 +256,29 @@ export default function Reward() {
       </ScrollableContent>
 
       {/* Popup Modal */}
-      {/* Popup Modal */}
-<Modal open={isRewardModalOpen} onClose={handleCloseModal}>
-  <RewardModal>
-    <Typography variant="h6" gutterBottom>
-      Reward Unlocked!
-    </Typography>
-    <Typography variant="body1" gutterBottom>
-      Congratulations! You've unlocked the {selectedReward?.title} reward.
-    </Typography>
-    <Typography variant="body2" color="text.secondary" gutterBottom>
-      {selectedReward?.description}
-    </Typography>
-    <Typography variant="h5" color="primary" gutterBottom>
-      {selectedReward?.value}
-    </Typography>
-    <Button
-      variant="contained"
-      onClick={() => window.open(selectedReward?.link, "_blank")}
-      sx={{ mt: 2, backgroundColor: "#3b82f6", "&:hover": { backgroundColor: "#2563eb" } }}
-    >
-      Go to Offer
-    </Button>
-  </RewardModal>
-</Modal>
+      <Modal open={isRewardModalOpen} onClose={handleCloseModal}>
+        <RewardModal>
+          <Typography variant="h6" gutterBottom>
+            Reward Unlocked!
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            Congratulations! You've unlocked the {selectedReward?.title} reward.
+          </Typography>
+          <Typography variant="body2" color="text.secondary" gutterBottom>
+            {selectedReward?.description}
+          </Typography>
+          <Typography variant="h5" color="primary" gutterBottom>
+            {selectedReward?.value}
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={() => window.open(selectedReward?.link, "_blank")}
+            sx={{ mt: 2, backgroundColor: "#3b82f6", "&:hover": { backgroundColor: "#2563eb" } }}
+          >
+            Go to Offer
+          </Button>
+        </RewardModal>
+      </Modal>
 
     </PageWrapper>
   );
