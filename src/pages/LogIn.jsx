@@ -68,6 +68,10 @@ const GoogleButton = styled(Button)(({ theme }) => ({
 function LogIn() {
   useUserAuth();
 
+  useEffect(() => {
+    document.title = "Login";
+  }, []);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [notification, setNotification] = useState({ open: false, message: "", severity: "info" });
