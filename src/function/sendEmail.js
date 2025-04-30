@@ -18,6 +18,6 @@ export const sendEmail = async (email, name) => {
     console.log('Sign-up email sent successfully.');
   } catch (error) {
     console.error('Failed to send sign-up email:', error);
-    throw error; // Optionally rethrow to handle errors in the calling function
+    throw error; 
   }
 };

@@ -7,10 +7,10 @@ export const getTransaction = async (uid) => {
     const querySnapshot = await getDocs(q);
     let transactionsArray = [];
     querySnapshot.forEach((doc) => {
-      // Include the document ID in the transaction data
+      // include  document ID in transaction data
       transactionsArray.push({ id: doc.id, ...doc.data() });
     });
-    console.log("Fetched Transactions:", transactionsArray); // debug
+    // console.log("Fetched Transactions:", transactionsArray);
     return transactionsArray;
   } catch (e) {
     console.error("Error getting document: ", e);

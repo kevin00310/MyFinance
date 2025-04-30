@@ -1,10 +1,10 @@
 import { db } from "../firebase";
 import { collection, query, orderBy, limit, getDocs, writeBatch } from "firebase/firestore";
 
-// Function to delete all documents in a collection or subcollection
+// func to delete all documents
 export async function deleteTransaction(collectionPath, batchSize = 50) {
   try {
-    console.log(`Starting deletion of collection: ${collectionPath}`);
+    // console.log(`Starting deletion of collection: ${collectionPath}`);
     const collectionRef = collection(db, collectionPath);
     const q = query(collectionRef, orderBy('__name__'), limit(batchSize));
     return await deleteQueryBatch(q);
@@ -33,9 +33,9 @@ async function deleteQueryBatch(q) {
     console.log("Batch deletion successful.");
     
 
-    // Add a small delay to avoid overwhelming Firestore
+    // add a small delay to avoid overwhelming Firestore
     await new Promise((resolve) => setTimeout(resolve, 100)); // 100ms delay
-    await deleteQueryBatch(q); // Continue deleting the next batch
+    await deleteQueryBatch(q); // continue deleting the next batch
   } catch (error) {
     console.error("Error in deleteQueryBatch:", error.message, error.code, error);
     throw error;

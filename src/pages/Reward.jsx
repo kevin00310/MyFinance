@@ -229,11 +229,11 @@ export default function Reward() {
               const unlockDays = requiredDays - daysJoined > 0 ? requiredDays - daysJoined : 0;
 
               // Debug logging to verify values
-              console.log(`Card ${index + 1}:`);
-              console.log(`  Required Days: ${requiredDays}`);
-              console.log(`  Days Joined: ${daysJoined}`);
-              console.log(`  Is Clickable: ${isClickable}`);
-              console.log(`  Unlock Days Remaining: ${unlockDays}`);
+              // console.log(`Card ${index + 1}:`);
+              // console.log(`  Required Days: ${requiredDays}`);
+              // console.log(`  Days Joined: ${daysJoined}`);
+              // console.log(`  Is Clickable: ${isClickable}`);
+              // console.log(`  Unlock Days Remaining: ${unlockDays}`);
 
               return (
                 <Grid item xs={12} sm={6} md={4} key={index}>

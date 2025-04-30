@@ -98,7 +98,7 @@ function SignUp() {
           signUpwEmail(email, password, name)
             .then(() => navigate("/home"))
             .catch((error) => {
-              console.error("Error during email sign-up:", error);
+              // console.error("Error during email sign-up:", error);
               setSnackbar({ open: true, message: "Failed to sign up. Please check your details and try again.", severity: "error" });
             });
         } else {
@@ -114,7 +114,7 @@ function SignUp() {
 
   const SignUpGoogle = () => {
     signInUpwGoogle().catch((error) => {
-      console.error("Error during Google sign-up:", error);
+      // console.error("Error during Google sign-up:", error);
       setSnackbar({ open: true, message: "Failed to sign up with Google. Please try again.", severity: "error" });
     });
   };

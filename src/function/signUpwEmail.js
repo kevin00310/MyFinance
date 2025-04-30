@@ -1,9 +1,6 @@
-// import React, { useState } from "react";
-// import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebase';
 import { createUser } from "../function/createUser";
-// import emailjs from '@emailjs/browser';
 
 export async function signUpwEmail(email, password, name) {
   try {
@@ -14,7 +11,6 @@ export async function signUpwEmail(email, password, name) {
     await createUser(user, name);
 
     alert(`Welcome, ${user.email}`);
-    //alert(`Sign-up successful! Welcome, ${user.email}`);
     window.location.href = "/home";
     
   } catch (error) {
@@ -22,7 +18,6 @@ export async function signUpwEmail(email, password, name) {
     console.log(errorCode);
     const errorMessage = error.message;
     console.log(errorMessage);
-    // alert(`Error ${errorCode}: ${errorMessage}`);
     alert("Invalid email, please try another.");
   }
 }

@@ -9,11 +9,11 @@ export const addTransaction = async (transaction) => {
     );
     console.log("Document written with ID: ", docRef.id);
       // alert("Transaction Added!");
-      console.log("Transaction Added!");
+      // console.log("Transaction Added!");
       window.location.reload();
   } catch (e) {
     console.error("Error adding document: ", e);
       // alert("Couldn't add transaction");
-      console.log("Couldn't add transaction");
+      // console.log("Couldn't add transaction");
   }
 }

@@ -3,7 +3,7 @@ import { Container, Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Header from "../components/Header";
 
-// Ensure the entire page background is consistent
+// Ensure entire page background is consistent
 const PageWrapper = styled(Box)({
   height: "100vh",
   width: "100%",
@@ -14,7 +14,7 @@ const PageWrapper = styled(Box)({
   flexDirection: "column",
 });
 
-// Make the content scrollable while keeping the header fixed
+// content scrollable while keeping the header fixed
 const ScrollableContent = styled(Box)(({ theme }) => ({
   height: "calc(100vh - 64px)",
   overflowY: "auto",
